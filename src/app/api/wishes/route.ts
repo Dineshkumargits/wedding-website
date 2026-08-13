@@ -3,7 +3,7 @@ import { getWishes, saveWish } from '@/lib/db';
 
 export async function GET() {
   try {
-    const wishes = getWishes();
+    const wishes = await getWishes();
     return NextResponse.json({ success: true, wishes });
   } catch (error) {
     console.error('Wishes retrieval error:', error);
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const saved = saveWish({
+    const saved = await saveWish({
       name,
       message,
     });

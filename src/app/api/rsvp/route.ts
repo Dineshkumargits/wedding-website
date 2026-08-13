@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     }
 
     const count = parseInt(guestsCount, 10);
-    const saved = saveRSVP({
+    const saved = await saveRSVP({
       name,
       attendance: attendance === 'yes' ? 'yes' : 'no',
       guestsCount: isNaN(count) ? 1 : count,
