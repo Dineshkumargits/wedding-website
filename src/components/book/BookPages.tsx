@@ -207,33 +207,49 @@ export function StoryTitlePage({ side }: { side: 'left' | 'right' }) {
 /* PAGES 6 & 7 — the milestones                                        */
 /* ------------------------------------------------------------------ */
 
-const milestones = [
+/**
+ * ⚠️ PLACEHOLDER CONTENT — needs the couple's real story.
+ *
+ * The first three entries originally carried specific dates and places
+ * ("Autumn 2023", "the bustling life of Chennai", "coffee dates") that came
+ * from the project scaffold, not from Sanjay and Fathima. They have been
+ * rewritten to be warm but non-specific so that nothing invented is printed on
+ * a real wedding invitation.
+ *
+ * Replace `date` and `description` below once the real details are known; the
+ * date line is simply omitted when `date` is undefined.
+ *
+ * The final entry is factual — it comes from the invitation card itself.
+ */
+const milestones: {
+  title: string;
+  date?: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+}[] = [
   {
-    title: 'First Spark',
-    date: 'Autumn 2023',
+    title: 'The Beginning',
     description:
-      'Amidst the bustling life of Chennai, two paths crossed. A simple conversation bloomed into hours of shared laughter.',
+      'Some meetings seem ordinary at the time, and only later reveal themselves as the start of everything.',
     icon: Compass,
   },
   {
-    title: 'Deepening Bonds',
-    date: 'Spring 2024',
+    title: 'Growing Together',
     description:
-      'Through coffee dates, shared dreams and long walks, friendship turned into love — a shared resonance of faith and family.',
+      'Friendship deepened into love as they found in one another a shared faith, a shared devotion to family, and a shared idea of the life they hoped to build.',
     icon: MessageSquare,
   },
   {
     title: 'The Promise',
-    date: 'Winter 2025',
     description:
-      'With the blessings of parents and loved ones, a promise to walk together forever. An engagement sealed with rings and endless smiles.',
+      'With the blessing of both families, they promised to walk the rest of the way together.',
     icon: Gem,
   },
   {
     title: 'The Holy Matrimony',
     date: 'September 13, 2026',
     description:
-      'Standing before God and their dearest family at St. Fathima Shrine, they will seal their vows and begin their greatest adventure.',
+      'Before God, and surrounded by the family and friends who have carried them here, they will make their vows at St. Fathima Shrine.',
     icon: Heart,
   },
 ];
@@ -248,9 +264,11 @@ function Milestone({ index }: { index: number }) {
         </div>
       </div>
       <div className="min-w-0">
-        <span className="font-serif text-[10px] sm:text-[10px] tracking-[0.25em] uppercase text-gold-dark font-semibold">
-          {date}
-        </span>
+        {date && (
+          <span className="font-serif text-[10px] sm:text-[10px] tracking-[0.25em] uppercase text-gold-dark font-semibold">
+            {date}
+          </span>
+        )}
         <h4 className="font-serif text-sm sm:text-base font-bold text-ink leading-snug">
           {title}
         </h4>

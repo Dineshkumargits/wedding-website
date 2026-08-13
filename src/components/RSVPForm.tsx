@@ -130,6 +130,7 @@ export default function RSVPForm() {
                 <input
                   id="rsvp-name"
                   type="text"
+                  maxLength={60}
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
@@ -231,6 +232,7 @@ export default function RSVPForm() {
                 <textarea
                   id="rsvp-message"
                   name="message"
+                  maxLength={500}
                   value={formData.message}
                   onChange={handleChange}
                   placeholder="Leave a lovely blessing or request..."

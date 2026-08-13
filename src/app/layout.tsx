@@ -20,9 +20,38 @@ const inter = Inter({
   weight: ["300", "400", "500", "600", "700"],
 });
 
+const title = "Wedding Celebration of Sanjay & Fathima Rani";
+const description =
+  "You are cordially invited to celebrate the holy matrimony of J. Joseph Sanjay & B. Fathima Rani on September 13, 2026 at St. Fathima Shrine, Krishnagiri.";
+
+/**
+ * Absolute base for OG/Twitter image URLs. Set NEXT_PUBLIC_SITE_URL once a
+ * custom domain is live; otherwise Vercel's production URL is used, falling
+ * back to localhost for local development.
+ */
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "http://localhost:3000");
+
 export const metadata: Metadata = {
-  title: "Wedding Celebration of Sanjay & Fathima Rani",
-  description: "You are cordially invited to celebrate the holy matrimony of J. Joseph Sanjay & B. Fathima Rani on September 13, 2026 at St. Fathima Shrine, Krishnagiri.",
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
+  // og:image is supplied automatically by src/app/opengraph-image.tsx
+  openGraph: {
+    title,
+    description,
+    type: "website",
+    locale: "en_IN",
+    siteName: "Sanjay & Fathima Rani",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
 };
 
 export default function RootLayout({

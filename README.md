@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sanjay & Fathima Rani — Wedding Invitation
 
-## Getting Started
+Next.js 16 app for the wedding of J. Joseph Sanjay & B. Fathima Rani,
+13 September 2026 at St. Fathima Shrine, Krishnagiri.
 
-First, run the development server:
+## Local development
 
 ```bash
+npm install
+cp .env.example .env.local   # then fill in the Supabase values
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Required | Notes |
+| --- | --- | --- |
+| `SUPABASE_URL` | yes | Project **API** URL, e.g. `https://<ref>.supabase.co`. Not the dashboard address. |
+| `SUPABASE_SECRET_KEY` | yes | The `sb_secret_...` key. Bypasses RLS — server-only, never `NEXT_PUBLIC_`. |
+| `NEXT_PUBLIC_SITE_URL` | no | Canonical origin for share-preview image URLs. Defaults to Vercel's production URL. |
+| `RATE_LIMIT_SALT` | no | Salt for the hashed-IP guestbook rate limit. Falls back to the secret key. |
 
-## Learn More
+`.env.local` is gitignored. `.env.example` is committed, so keep placeholders
+only in it.
 
-To learn more about Next.js, take a look at the following resources:
+## Database
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Supabase Postgres. Run [`supabase/schema.sql`](supabase/schema.sql) in the
+Supabase SQL Editor — it is idempotent, so re-running it is safe and is how you
+apply later additions (such as the `wishes.ip_hash` column used for rate
+limiting).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+RLS is enabled with no policies, so the public anon key can read nothing. The
+app reaches the tables only from its own route handlers using the secret key.
 
-## Deploy on Vercel
+To read RSVPs, use the Supabase dashboard → **Table Editor** → `rsvps`, which
+supports sorting, filtering and CSV export.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deploying to Vercel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Push the repo to GitHub, then import it at [vercel.com/new](https://vercel.com/new).
+   The framework preset is detected automatically — no build settings to change.
+2. Add `SUPABASE_URL` and `SUPABASE_SECRET_KEY` under
+   **Project Settings → Environment Variables** (Production *and* Preview).
+3. Deploy, then check:
+   - the book cover opens and pages turn on scroll
+   - an RSVP submits and appears in the `rsvps` table
+   - a blessing submits and appears on the wall
+   - the QR modal opens on the venue section
+   - pasting the URL into WhatsApp shows the gold share card
+
+Note: the API routes use `node:crypto` and therefore need the **Node.js
+runtime**, which is the default. Do not add `export const runtime = 'edge'` to
+anything under `src/app/api`.
+
+## Optional: background music
+
+The music player renders only when a track exists at
+`public/wedding-song.mp3`. Add one to enable it — and make sure the recording
+is licensed for this use, since the site is public.
+
+## Content that still needs the couple's input
+
+The first three love-story milestones in
+[`src/components/book/BookPages.tsx`](src/components/book/BookPages.tsx) are
+deliberately non-specific placeholders. Replace their `date` and `description`
+values with the real story before launch.

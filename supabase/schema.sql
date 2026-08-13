@@ -21,9 +21,16 @@ create table if not exists wishes (
   created_at timestamptz not null default now()
 );
 
+-- Salted hash of the submitter's IP, used only to rate limit the public
+-- guestbook. The raw IP is never stored.
+alter table wishes add column if not exists ip_hash text;
+
 -- Both lists are always read newest-first.
 create index if not exists rsvps_created_at_idx  on rsvps  (created_at desc);
 create index if not exists wishes_created_at_idx on wishes (created_at desc);
+
+-- Supports the rate-limit lookup: "how many wishes from this hash recently?"
+create index if not exists wishes_ip_hash_idx on wishes (ip_hash, created_at desc);
 
 -- Row Level Security is enabled with NO policies, which denies all access
 -- through the public anon key. The site reaches these tables only from its

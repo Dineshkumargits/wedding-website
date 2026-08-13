@@ -101,6 +101,7 @@ export default function Guestbook() {
                 <input
                   id="wish-name"
                   type="text"
+                  maxLength={60}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Sarah & Michael"
@@ -115,6 +116,7 @@ export default function Guestbook() {
                 </label>
                 <textarea
                   id="wish-msg"
+                  maxLength={500}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Write a sweet message..."

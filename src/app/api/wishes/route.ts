@@ -1,5 +1,13 @@
 import { NextResponse } from 'next/server';
-import { getWishes, saveWish } from '@/lib/db';
+import { countRecentWishes, getWishes, saveWish } from '@/lib/db';
+import {
+  LIMITS,
+  RATE_LIMIT_MAX,
+  RATE_LIMIT_WINDOW_MS,
+  checkText,
+  hashIp,
+  normalise,
+} from '@/lib/validation';
 
 export async function GET() {
   try {
@@ -17,19 +25,37 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, message } = body;
 
-    if (!name || !message) {
-      return NextResponse.json(
-        { error: 'Name and Message fields are required.' },
-        { status: 400 }
-      );
+    const name = normalise(body?.name);
+    const message = normalise(body?.message);
+
+    const problem =
+      checkText(name, 'Name', LIMITS.name) ??
+      checkText(message, 'Message', LIMITS.wishMessage);
+
+    if (problem) {
+      return NextResponse.json({ error: problem }, { status: 400 });
     }
 
-    const saved = await saveWish({
-      name,
-      message,
-    });
+    // This wall is public and unauthenticated, so cap how fast one submitter
+    // can fill it.
+    const ipHash = hashIp(request);
+    if (ipHash) {
+      const since = new Date(Date.now() - RATE_LIMIT_WINDOW_MS);
+      const recent = await countRecentWishes(ipHash, since);
+
+      if (recent >= RATE_LIMIT_MAX) {
+        return NextResponse.json(
+          {
+            error:
+              'Thank you — you have already left a few blessings. Please try again in a little while.',
+          },
+          { status: 429 }
+        );
+      }
+    }
+
+    const saved = await saveWish({ name, message }, ipHash ?? undefined);
 
     return NextResponse.json({ success: true, wish: saved });
   } catch (error) {

@@ -146,13 +146,71 @@ export async function getWishes(): Promise<Wish[]> {
   return (data as WishRow[]).map(toWish);
 }
 
-export async function saveWish(wish: Omit<Wish, 'id' | 'createdAt'>): Promise<Wish> {
-  const { data, error } = await getClient()
-    .from('wishes')
-    .insert({ name: wish.name, message: wish.message })
-    .select()
-    .single();
+/**
+ * Set once we learn the `ip_hash` column is absent, so a database that has not
+ * had the rate-limit migration applied still accepts blessings — it just does
+ * not rate limit them. Losing guests' messages is a worse outcome than losing
+ * the limiter.
+ */
+let ipHashColumnMissing = false;
+
+/** PostgREST's code for "column not found in schema cache". */
+const UNKNOWN_COLUMN = 'PGRST204';
+
+export async function saveWish(
+  wish: Omit<Wish, 'id' | 'createdAt'>,
+  ipHash?: string,
+): Promise<Wish> {
+  const base = { name: wish.name, message: wish.message };
+
+  if (!ipHashColumnMissing) {
+    const { data, error } = await getClient()
+      .from('wishes')
+      .insert({ ...base, ip_hash: ipHash ?? null })
+      .select()
+      .single();
+
+    if (!error) return toWish(data as WishRow);
+
+    if (error.code !== UNKNOWN_COLUMN) {
+      throw new Error(`Failed to save wish: ${error.message}`);
+    }
+
+    console.warn(
+      'wishes.ip_hash is missing — guestbook rate limiting is disabled. ' +
+        'Run supabase/schema.sql to enable it.',
+    );
+    ipHashColumnMissing = true;
+  }
+
+  const { data, error } = await getClient().from('wishes').insert(base).select().single();
 
   if (error) throw new Error(`Failed to save wish: ${error.message}`);
   return toWish(data as WishRow);
+}
+
+/**
+ * How many wishes this submitter has posted since `since`.
+ *
+ * Counted in the database rather than in memory because serverless instances
+ * are not shared — an in-process counter would reset on every cold start and
+ * be trivially bypassed.
+ */
+export async function countRecentWishes(ipHash: string, since: Date): Promise<number> {
+  if (ipHashColumnMissing) return 0;
+
+  const { count, error } = await getClient()
+    .from('wishes')
+    .select('id', { count: 'exact', head: true })
+    .eq('ip_hash', ipHash)
+    .gte('created_at', since.toISOString());
+
+  if (error) {
+    // Fail open. The limiter is a guard, not the feature — if the check itself
+    // is broken the guest should still be able to leave their blessing.
+    console.warn(`Rate-limit check unavailable, allowing the wish: ${error.message}`);
+    return 0;
+  }
+
+  return count ?? 0;
 }
