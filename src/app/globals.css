@@ -1,0 +1,261 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy-dark: #050B14;
+  --color-navy-deep: #0D1F3D;
+  --color-navy-medium: #15325B;
+  --color-gold-light: #F5E6C4;
+  --color-gold: #D4AF37;
+  --color-gold-dark: #AA7C11;
+  --color-ivory: #FDFBF7;
+  --color-ivory-dark: #EAE6DF;
+  --color-paper: #FBF9F4;
+  --color-paper-deep: #F1EADA;
+  /* Ink is kept genuinely dark: the earlier soft grey sat too close to the
+     paper tone and small type disappeared into it. */
+  --color-ink: #101C33;
+  --color-ink-soft: #33405C;
+
+  --font-serif: var(--font-cinzel), Georgia, serif;
+  --font-playfair: var(--font-playfair), Georgia, serif;
+  --font-sans: var(--font-inter), sans-serif;
+  
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-slow: float-slow 12s ease-in-out infinite;
+  --animate-float-fast: float-fast 4s ease-in-out infinite;
+  --animate-gold-glow: gold-glow 2s ease-in-out infinite alternate;
+}
+
+:root {
+  --background: #050B14;
+  --foreground: #FDFBF7;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  /* `clip` rather than `hidden`: hidden turns the body into a scroll container,
+     which silently breaks the position:sticky book stage. */
+  overflow-x: clip;
+}
+
+/* Custom Utilities */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #FFF6D6 0%, #D4AF37 50%, #F5E6C4 80%, #AA7C11 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-gold-gradient {
+  background: linear-gradient(135deg, #AA7C11 0%, #D4AF37 40%, #FFF6D6 60%, #D4AF37 80%, #AA7C11 100%);
+}
+
+.bg-navy-gradient {
+  background: radial-gradient(circle at center, #15325B 0%, #0D1F3D 50%, #050B14 100%);
+}
+
+.glass-card {
+  background: rgba(13, 31, 61, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card-hover {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-5px);
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 12px 40px 0 rgba(212, 175, 55, 0.15);
+}
+
+.gold-border-glow {
+  position: relative;
+}
+
+.gold-border-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, #AA7C11, #D4AF37, #FFF6D6, #D4AF37) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+
+.gold-border-glow:hover::after {
+  opacity: 1;
+}
+
+/* Animations */
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(2deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes float-slow {
+  0% { transform: translateY(0px) rotate(0deg) scale(1); }
+  50% { transform: translateY(-25px) rotate(-3deg) scale(1.05); }
+  100% { transform: translateY(0px) rotate(0deg) scale(1); }
+}
+
+@keyframes float-fast {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes gold-glow {
+  0% { box-shadow: 0 0 5px rgba(212, 175, 55, 0.2); }
+  100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.6); }
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050B14;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #AA7C11;
+}
+
+/* ---------------------------------------------------------------
+   BOOK / PAPER SYSTEM
+   The ceremonial half of the site is rendered as ivory paper pages
+   floating in the navy void, so these utilities are the "light mode"
+   counterpart to the gold-on-navy utilities above.
+   --------------------------------------------------------------- */
+
+.backface-hidden {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* Ivory paper surface with a faint fibre grain, built from gradients
+   only so no image asset is required. */
+.paper-surface {
+  background-color: #FBF9F4;
+  /* Kept pale and low-contrast on purpose — the grain must never compete with
+     the small type sitting on top of it. */
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(212, 175, 55, 0.035) 0%, transparent 45%),
+    radial-gradient(circle at 82% 78%, rgba(170, 124, 17, 0.035) 0%, transparent 45%),
+    repeating-linear-gradient(115deg, rgba(16, 28, 51, 0.01) 0px, rgba(16, 28, 51, 0.01) 1px, transparent 1px, transparent 4px),
+    repeating-linear-gradient(25deg, rgba(16, 28, 51, 0.008) 0px, rgba(16, 28, 51, 0.008) 1px, transparent 1px, transparent 5px),
+    linear-gradient(160deg, #FFFEFB 0%, #FBF9F4 50%, #F6F1E7 100%);
+  color: var(--color-ink);
+}
+
+/* Inner shadow along the spine edge so a page looks bound, not floating.
+   Right-hand pages are gutter-shaded on their left edge and vice versa. */
+.gutter-left::before,
+.gutter-right::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 42px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.gutter-left::before {
+  left: 0;
+  background: linear-gradient(90deg, rgba(16, 28, 51, 0.15) 0%, rgba(16, 28, 51, 0.04) 45%, transparent 100%);
+}
+
+.gutter-right::before {
+  right: 0;
+  background: linear-gradient(270deg, rgba(16, 28, 51, 0.15) 0%, rgba(16, 28, 51, 0.04) 45%, transparent 100%);
+}
+
+/* Gold foil that stays legible on ivory (the navy-side gradient is too
+   pale to read against paper). */
+.text-gold-foil {
+  /* No stop lighter than #D4AF37 — a pale highlight in the middle of the
+     gradient makes headings vanish against the paper. */
+  background: linear-gradient(135deg, #6E4E07 0%, #A8811A 35%, #D4AF37 55%, #8A6410 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* The stacked page edges visible on the fore-edge of the closed book. */
+.page-edges {
+  background: repeating-linear-gradient(
+    90deg,
+    #FAF7F0 0px,
+    #FAF7F0 1px,
+    #D9D0BC 1px,
+    #D9D0BC 2px,
+    #F1EADA 2px,
+    #F1EADA 3px
+  );
+}
+
+/* Leather-grain cover for the closed book. */
+.cover-surface {
+  background-color: #FAF7F0;
+  background-image:
+    radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.7) 0%, transparent 55%),
+    repeating-linear-gradient(45deg, rgba(170, 124, 17, 0.035) 0px, rgba(170, 124, 17, 0.035) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(-45deg, rgba(170, 124, 17, 0.03) 0px, rgba(170, 124, 17, 0.03) 1px, transparent 1px, transparent 3px),
+    linear-gradient(145deg, #FFFDF8 0%, #F6F0E2 50%, #E9DFC8 100%);
+}
+
+/* Marbled endpaper glued to the inside of each cover. */
+.endpaper-surface {
+  background-color: #F1EADA;
+  background-image:
+    radial-gradient(ellipse at 30% 30%, rgba(212, 175, 55, 0.16) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 70%, rgba(21, 50, 91, 0.1) 0%, transparent 55%),
+    repeating-linear-gradient(60deg, rgba(170, 124, 17, 0.05) 0px, rgba(170, 124, 17, 0.05) 2px, transparent 2px, transparent 9px),
+    linear-gradient(140deg, #F4EEE0 0%, #E9E0CB 100%);
+}
+
+/* Page Divider Styles */
+.flourish-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0;
+  color: #D4AF37;
+}
+
+.flourish-divider::before,
+.flourish-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+  max-width: 150px;
+  margin: 0 1rem;
+}
