@@ -16,7 +16,7 @@ export default function Venue() {
   return (
     <div className="py-12">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-        
+
         {/* Left column: Event cards */}
         <div className="lg:col-span-7 flex flex-col justify-between gap-6">
           {/* Card 1: Holy Matrimony Ceremony */}
@@ -77,7 +77,7 @@ export default function Venue() {
                   </span>
                 </div>
                 <h4 className="font-serif text-xl sm:text-2xl text-gold-light font-bold mb-3">
-                  The Reception Dinner
+                  The Reception
                 </h4>
                 <p className="text-sm text-ivory/80 mb-4 leading-relaxed">
                   Celebrate the beginning of our new chapter with food, drinks, and merrymaking. We cannot wait to celebrate with you!
