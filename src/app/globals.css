@@ -236,6 +236,18 @@ html {
     linear-gradient(145deg, #FFFDF8 0%, #F6F0E2 50%, #E9DFC8 100%);
 }
 
+/* A faint diaper/damask lattice for the cover. Kept under ~6% opacity: it
+   should register as texture at arm's length, never as pattern. */
+.cover-damask {
+  background-image:
+    radial-gradient(circle, rgba(170, 124, 17, 0.07) 0 1.6px, transparent 1.9px),
+    radial-gradient(circle, rgba(170, 124, 17, 0.05) 0 1.1px, transparent 1.4px),
+    repeating-linear-gradient(45deg, rgba(170, 124, 17, 0.028) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(-45deg, rgba(170, 124, 17, 0.028) 0 1px, transparent 1px 22px);
+  background-size: 30px 30px, 30px 30px, auto, auto;
+  background-position: 0 0, 15px 15px, 0 0, 0 0;
+}
+
 /* Marbled endpaper glued to the inside of each cover. */
 .endpaper-surface {
   background-color: #F1EADA;

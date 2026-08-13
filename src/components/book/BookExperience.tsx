@@ -14,6 +14,7 @@ import confetti from 'canvas-confetti';
 import { Heart, Key, X } from 'lucide-react';
 import { useParallaxPointer } from '@/components/parallax/ParallaxProvider';
 import BookSheet from './BookSheet';
+import { CoverArch, CornerFlourish } from './CoverOrnaments';
 import {
   ClosingPage,
   InvitationPage,
@@ -318,7 +319,9 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
         >
           {/*
             The closed book occupies only the right half of the spread, so on
-            desktop it is nudged right to sit centred. That offset is done in
+            desktop the whole book is nudged LEFT by a quarter of its width,
+            which brings that right half to the centre of the screen. Shifting
+            right instead pushed the cover off the edge of the viewport. That offset is done in
             CSS at the `md` breakpoint rather than from JS: driving it from
             `isMobile` meant the very first client render put the book in the
             desktop position on phones, then snapped it sideways once the media
@@ -326,7 +329,7 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
           */}
           <div
             className={`w-full h-full transition-transform duration-[1400ms] ease-[cubic-bezier(0.65,0,0.2,1)] ${
-              isOpen ? 'translate-x-0' : 'translate-x-0 md:translate-x-[25%]'
+              isOpen ? 'translate-x-0' : 'translate-x-0 md:-translate-x-[25%]'
             }`}
           >
           <motion.div
@@ -342,25 +345,37 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
             }}
             className="relative w-full h-full"
           >
-            {/* Board the pages are bound to */}
-            <div className="absolute inset-0 rounded-lg bg-navy-deep/60 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)]" />
+            {/*
+              Boards stay hidden until the book opens. Closed, the cover only
+              spans the right half of the spread, so on desktop the left board
+              would otherwise sit beside it as a blank ivory panel — a closed
+              book showing its own endpaper.
+            */}
+            <div
+              className={`absolute inset-0 transition-opacity duration-500 ${
+                isOpen ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              {/* Board the pages are bound to */}
+              <div className="absolute inset-0 rounded-lg bg-navy-deep/60 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)]" />
 
-            {/* Inside of the left board — the endpaper the cover lies on */}
-            <div className="absolute top-0 left-0 h-full w-full md:w-1/2 endpaper-surface rounded-l-lg gutter-right overflow-hidden">
-              <div className="absolute inset-4 border border-gold/20 rounded-sm" />
-            </div>
+              {/* Inside of the left board — the endpaper the cover lies on */}
+              <div className="absolute top-0 left-0 h-full w-full md:w-1/2 endpaper-surface rounded-l-lg gutter-right overflow-hidden">
+                <div className="absolute inset-4 border border-gold/20 rounded-sm" />
+              </div>
 
-            {/* Inside of the right board — revealed once every page has turned */}
-            <div className="absolute top-0 right-0 h-full w-full md:w-1/2 endpaper-surface rounded-r-lg gutter-left overflow-hidden">
-              <div className="absolute inset-4 border border-gold/20 rounded-sm" />
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-8">
-                <Heart className="w-5 h-5 text-gold-dark/60" />
-                <p className="font-serif text-[11px] tracking-[0.3em] uppercase text-gold-dark">
-                  Sanjay &amp; Fathima Rani
-                </p>
-                <p className="font-playfair italic text-[11px] text-ink-soft max-w-[80%]">
-                  Thank you for sharing our happiness.
-                </p>
+              {/* Inside of the right board — revealed once every page has turned */}
+              <div className="absolute top-0 right-0 h-full w-full md:w-1/2 endpaper-surface rounded-r-lg gutter-left overflow-hidden">
+                <div className="absolute inset-4 border border-gold/20 rounded-sm" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-8">
+                  <Heart className="w-5 h-5 text-gold-dark/60" />
+                  <p className="font-serif text-[11px] tracking-[0.3em] uppercase text-gold-dark">
+                    Sanjay &amp; Fathima Rani
+                  </p>
+                  <p className="font-playfair italic text-[11px] text-ink-soft max-w-[80%]">
+                    Thank you for sharing our happiness.
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -391,9 +406,19 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
               className="absolute top-0 right-0 h-full w-full md:w-1/2"
             >
               {/* Outside of the cover */}
-              <div className="absolute inset-0 backface-hidden cover-surface rounded-r-lg border border-gold/40 shadow-[6px_10px_40px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col items-center justify-center px-6 py-7 text-center">
+              <div className="absolute inset-0 backface-hidden cover-surface cover-damask rounded-r-lg border border-gold/40 shadow-[6px_10px_40px_rgba(0,0,0,0.6)] overflow-hidden">
                 <div className="absolute inset-3 border-2 border-double border-gold/45 rounded-md pointer-events-none" />
                 <div className="absolute inset-5 border border-gold/25 rounded-sm pointer-events-none" />
+
+                {/* Background ornament, behind the type and the couple */}
+                <CoverArch />
+                <CornerFlourish position="tl" />
+                <CornerFlourish position="tr" />
+                <CornerFlourish position="bl" />
+                <CornerFlourish position="br" />
+
+                {/* Content sits above the ornament layers */}
+                <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-6 py-7 text-center">
 
                 <span className="font-serif text-[10px] sm:text-[11px] tracking-[0.35em] uppercase text-gold-dark shrink-0">
                   The Matrimony of
@@ -427,7 +452,7 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
                     height={2308}
                     priority
                     sizes="(max-width: 767px) 45vw, 220px"
-                    className="relative h-full w-auto max-w-full object-contain drop-shadow-[0_10px_16px_rgba(26,39,64,0.35)]"
+                    className="relative h-[88%] w-auto max-w-full object-contain drop-shadow-[0_10px_16px_rgba(26,39,64,0.35)]"
                   />
                   <div
                     aria-hidden
@@ -450,8 +475,10 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
                   <Key className="w-3.5 h-3.5" /> Enter Celebration
                 </button>
 
+                </div>
+
                 {/* Spine shading down the hinge edge */}
-                <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-navy-dark/25 to-transparent pointer-events-none" />
+                <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-navy-dark/25 to-transparent pointer-events-none z-20" />
               </div>
 
               {/* Inside of the cover */}
