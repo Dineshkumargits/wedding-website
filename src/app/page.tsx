@@ -124,7 +124,7 @@ function PageBody() {
               className="absolute bottom-0 w-56 h-40 bg-[radial-gradient(ellipse_at_bottom,rgba(212,175,55,0.22)_0%,transparent_70%)]"
             />
             <Image
-              src="/sanjay-fathima-cutout.png"
+              src="/sanjay-fathima-cutout-casual.png"
               alt="J. Joseph Sanjay and B. Fathima Rani"
               width={909}
               height={2308}
