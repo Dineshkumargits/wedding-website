@@ -39,6 +39,7 @@ body {
   overflow-x: clip;
 }
 
+
 /* Custom Utilities */
 .text-gold-gradient {
   background: linear-gradient(135deg, #FFF6D6 0%, #D4AF37 50%, #F5E6C4 80%, #AA7C11 100%);
@@ -120,9 +121,13 @@ body {
   100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.6); }
 }
 
-/* Smooth Scrolling */
 html {
   scroll-behavior: smooth;
+
+  /* Stops iOS rubber-banding from driving the pinned book stage past the ends
+     of its scroll range, where the page turns freeze while the finger is still
+     moving. Also prevents pull-to-refresh firing mid page-turn. */
+  overscroll-behavior-y: none;
 }
 
 /* Custom Scrollbar */

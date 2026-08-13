@@ -100,9 +100,9 @@ export default function ParallaxBackdrop() {
       {/* PLANE 0 — the far nebula. Barely moves; it is the horizon. */}
       <Layer shift={8} drift={-0.04} className="-inset-[15%]">
         <div className="absolute inset-0 bg-navy-gradient opacity-90" />
-        <div className="absolute top-[8%] left-[12%] w-[55vw] h-[55vw] rounded-full bg-[radial-gradient(circle,rgba(21,50,91,0.55)_0%,transparent_65%)] blur-3xl" />
-        <div className="absolute bottom-[5%] right-[8%] w-[48vw] h-[48vw] rounded-full bg-[radial-gradient(circle,rgba(13,31,61,0.85)_0%,transparent_65%)] blur-3xl" />
-        <div className="absolute top-[45%] left-[55%] w-[34vw] h-[34vw] rounded-full bg-[radial-gradient(circle,rgba(170,124,17,0.09)_0%,transparent_70%)] blur-3xl" />
+        <div className="absolute top-[8%] left-[12%] w-[55vw] h-[55vw] rounded-full bg-[radial-gradient(circle,rgba(21,50,91,0.55)_0%,transparent_65%)] md:blur-3xl" />
+        <div className="absolute bottom-[5%] right-[8%] w-[48vw] h-[48vw] rounded-full bg-[radial-gradient(circle,rgba(13,31,61,0.85)_0%,transparent_65%)] md:blur-3xl" />
+        <div className="absolute top-[45%] left-[55%] w-[34vw] h-[34vw] rounded-full bg-[radial-gradient(circle,rgba(170,124,17,0.09)_0%,transparent_70%)] md:blur-3xl" />
       </Layer>
 
       {/* PLANE 1 — the star field. */}
@@ -133,7 +133,7 @@ export default function ParallaxBackdrop() {
         {BOKEH.map((orb) => (
           <span
             key={orb.id}
-            className={`absolute rounded-full bg-gold/25 blur-2xl ${
+            className={`absolute rounded-full bg-gold/25 blur-md md:blur-2xl ${
               orb.desktopOnly ? 'hidden md:block' : ''
             }`}
             style={{
@@ -186,7 +186,7 @@ export function ParallaxForeground() {
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <div aria-hidden className="fixed inset-0 z-40 overflow-hidden pointer-events-none">
+    <div aria-hidden className="hidden md:block fixed inset-0 z-40 overflow-hidden pointer-events-none">
       <Layer shift={95} drift={-0.5} className="-inset-[25%]">
         {MOTES.map((mote) => (
           <span

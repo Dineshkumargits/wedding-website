@@ -30,23 +30,31 @@ const LEAD_IN = 0.06;
 /** Fraction after which the book recedes and hands off to the rest of the site. */
 const TURNS_END = 0.88;
 
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
+/**
+ * `mounted` matters as much as `isMobile`: the server cannot know the
+ * breakpoint, so anything that changes the DOM shape must wait until the real
+ * value is known. Rendering the desktop layout first and flipping to mobile a
+ * frame later moved the book sideways and — worse — changed the scroll
+ * target's height *after* useScroll had measured it, which broke the
+ * scroll-to-page-turn mapping.
+ */
+function useViewport() {
+  const [viewport, setViewport] = useState({ mounted: false, isMobile: false });
 
   useEffect(() => {
     const query = window.matchMedia('(max-width: 767px)');
-    const sync = () => setIsMobile(query.matches);
+    const sync = () => setViewport({ mounted: true, isMobile: query.matches });
     sync();
     query.addEventListener('change', sync);
     return () => query.removeEventListener('change', sync);
   }, []);
 
-  return isMobile;
+  return viewport;
 }
 
 export default function BookExperience({ onOpen }: { onOpen: () => void }) {
   const prefersReducedMotion = useReducedMotion();
-  const isMobile = useIsMobile();
+  const { mounted, isMobile } = useViewport();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
@@ -71,6 +79,11 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
   /* ---- sheets: a spread per sheet on desktop, one page per sheet on
          mobile, where a two-page spread cannot fit in portrait ---------- */
   const sheets = useMemo(() => {
+    // Until the breakpoint is known, render no sheets. Nothing is lost
+    // visually: the closed cover covers them entirely, and the page cannot be
+    // scrolled until the book is opened.
+    if (!mounted) return [];
+
     if (isMobile) {
       return pages.map((page) => ({
         front: page('right'),
@@ -85,7 +98,7 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
       });
     }
     return spreads;
-  }, [isMobile, pages]);
+  }, [mounted, isMobile, pages]);
 
   /* ---- scroll progress across the whole stage ------------------------ */
   const { scrollYProgress } = useScroll({
@@ -113,14 +126,54 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
   const tiltY = useTransform(parallax?.pointerX ?? fallback, (v) => v * 5);
   const tiltX = useTransform(parallax?.pointerY ?? fallback, (v) => -v * 2);
 
-  /* ---- hold the page still until the reader opens the book ----------- */
+  /* ---- hold the page still until the reader opens the book -----------
+     iOS Safari ignores `overflow: hidden` on html/body for scroll prevention,
+     so the previous lock did nothing on iPhone: readers could scroll past the
+     closed cover, and because the cover never opened they scrolled the whole
+     stage looking at a book that never turned.
+
+     Pinning the body with `position: fixed` is the technique WebKit does
+     honour. It collapses the body out of flow, so the scroll offset has to be
+     captured first and restored on release. */
   useEffect(() => {
     if (isOpen) return;
-    window.scrollTo(0, 0);
-    const previous = document.documentElement.style.overflow;
+
+    // The book is only ever locked before it has been opened, so the reader
+    // must start at the very top. Disabling scroll restoration stops the
+    // browser putting them back mid-stage after a refresh.
+    const previousRestoration = history.scrollRestoration;
+    history.scrollRestoration = 'manual';
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+    const body = document.body;
+    const previous = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      overflow: document.documentElement.style.overflow,
+    };
+
+    body.style.position = 'fixed';
+    body.style.top = '0';
+    body.style.left = '0';
+    body.style.right = '0';
+    body.style.width = '100%';
+    // Still set for non-iOS browsers, where it is the cheaper path.
     document.documentElement.style.overflow = 'hidden';
+
     return () => {
-      document.documentElement.style.overflow = previous;
+      body.style.position = previous.position;
+      body.style.top = previous.top;
+      body.style.left = previous.left;
+      body.style.right = previous.right;
+      body.style.width = previous.width;
+      document.documentElement.style.overflow = previous.overflow;
+      history.scrollRestoration = previousRestoration;
+      // Un-fixing the body drops the page back to offset 0, which is exactly
+      // where the newly opened book should be.
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     };
   }, [isOpen]);
 
@@ -199,9 +252,23 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
     <section
       ref={wrapperRef}
       className="relative w-full"
-      style={{ height: `${sheets.length * (isMobile ? 78 : 112) + 130}vh` }}
+      // svh, not vh: on iOS `vh` is the *large* viewport (toolbars hidden), so
+      // the stage would be taller than the screen whenever the toolbar shows.
+      //
+      // Before mount the stage is exactly one screen tall — there are no sheets
+      // to turn yet, and the page is locked at the top regardless.
+      style={{
+        height: mounted ? `${sheets.length * (isMobile ? 78 : 112) + 130}svh` : '100svh',
+      }}
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
+      {/*
+        h-[100svh] rather than h-screen. `100vh` on iOS Safari is the height
+        with the toolbars hidden, so the pinned stage sat taller than the
+        visible area and the book drifted vertically as Safari slid its toolbar
+        in and out. `svh` is constant regardless of toolbar state; `dvh` would
+        resize mid-scroll and make the sticky stage reflow continuously.
+      */}
+      <div className="sticky top-0 h-[100svh] w-full overflow-hidden flex items-center justify-center">
         {/* Warm bloom that opens out of the spine as the cover swings */}
         <motion.div
           aria-hidden
@@ -213,11 +280,24 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
 
         {/* 3D stage */}
         <div
-          className="relative w-[92vw] md:w-[min(94vw,1080px)] h-[74vh] md:h-[min(82vh,700px)]"
+          className="relative w-[92vw] md:w-[min(94vw,1080px)] h-[74svh] md:h-[min(82svh,700px)]"
           // Deeper perspective = gentler foreshortening, so type near the
           // outer edges of the spread stays square-on and legible.
           style={{ perspective: 3200 }}
         >
+          {/*
+            The closed book occupies only the right half of the spread, so on
+            desktop it is nudged right to sit centred. That offset is done in
+            CSS at the `md` breakpoint rather than from JS: driving it from
+            `isMobile` meant the very first client render put the book in the
+            desktop position on phones, then snapped it sideways once the media
+            query resolved.
+          */}
+          <div
+            className={`w-full h-full transition-transform duration-[1400ms] ease-[cubic-bezier(0.65,0,0.2,1)] ${
+              isOpen ? 'translate-x-0' : 'translate-x-0 md:translate-x-[25%]'
+            }`}
+          >
           <motion.div
             style={{
               scale: bookScale,
@@ -229,8 +309,6 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
               transformStyle: 'preserve-3d',
               willChange: 'transform',
             }}
-            animate={isOpen ? { x: '0%' } : { x: isMobile ? '0%' : '25%' }}
-            transition={{ duration: 1.4, ease: [0.65, 0, 0.2, 1] }}
             className="relative w-full h-full"
           >
             {/* Board the pages are bound to */}
@@ -343,6 +421,7 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
               </div>
             </motion.div>
           </motion.div>
+          </div>
         </div>
 
         {/* Scroll cue, only once the book is open */}
