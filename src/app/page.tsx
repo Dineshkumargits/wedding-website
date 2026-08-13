@@ -88,7 +88,7 @@ function PageBody() {
       </section>
 
       {/* --- RSVP FORM --- */}
-      <section
+      {/* <section
         id="rsvp"
         className="relative py-24 px-4 sm:px-6 bg-navy-deep/20 border-y border-gold/10 w-full"
       >
@@ -98,16 +98,16 @@ function PageBody() {
             <RSVPForm />
           </TiltCard>
         </div>
-      </section>
+      </section> */}
 
       {/* --- GUESTBOOK / BLESSINGS WALL --- */}
-      <section
+      {/* <section
         id="blessings"
         className="relative py-24 px-4 sm:px-6 md:px-8 max-w-5xl mx-auto w-full"
       >
         <SectionHeading eyebrow="Shower Blessings" title="Guest Blessings Wall" />
         <Guestbook />
-      </section>
+      </section> */}
 
       {/* --- FOOTER --- */}
       <footer className="relative py-16 px-4 bg-navy-dark/80 border-t border-gold/15 text-center mt-auto">

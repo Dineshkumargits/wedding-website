@@ -60,10 +60,10 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
       (side: 'left' | 'right') => <TitlePage side={side} />,
       (side: 'left' | 'right') => <ScripturePage side={side} />,
       (side: 'left' | 'right') => <InvitationPage side={side} onZoom={openZoom} />,
-      (side: 'left' | 'right') => <LovePage side={side} />,
-      (side: 'left' | 'right') => <StoryTitlePage side={side} />,
-      (side: 'left' | 'right') => <StoryPage side={side} from={0} folio="vi" />,
-      (side: 'left' | 'right') => <StoryPage side={side} from={2} folio="vii" />,
+      // (side: 'left' | 'right') => <LovePage side={side} />,
+      // (side: 'left' | 'right') => <StoryTitlePage side={side} />,
+      // (side: 'left' | 'right') => <StoryPage side={side} from={0} folio="vi" />,
+      // (side: 'left' | 'right') => <StoryPage side={side} from={2} folio="vii" />,
       (side: 'left' | 'right') => <ClosingPage side={side} />,
     ];
   }, []);
