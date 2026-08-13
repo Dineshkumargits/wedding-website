@@ -25,6 +25,12 @@ import {
   TitlePage,
 } from './BookPages';
 
+type Side = 'left' | 'right';
+
+/** Page numbers, assigned by position so the sequence never has gaps. */
+const ROMAN = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi', 'xii'];
+const folioFor = (index: number) => ROMAN[index] ?? String(index + 1);
+
 /** Fraction of the stage spent settling before the first page turns. */
 const LEAD_IN = 0.06;
 /** Fraction after which the book recedes and hands off to the rest of the site. */
@@ -61,44 +67,63 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
 
   const wrapperRef = useRef<HTMLElement | null>(null);
 
-  /* ---- the pages, in reading order ---------------------------------- */
+  /* ---- the pages, in reading order ----------------------------------
+     Page numbers are not written here: each page receives its folio from its
+     position below, so commenting one out renumbers the rest. */
   const pages = useMemo(() => {
     const openZoom = () => setIsZoomed(true);
     return [
-      (side: 'left' | 'right') => <TitlePage side={side} />,
-      (side: 'left' | 'right') => <ScripturePage side={side} />,
-      (side: 'left' | 'right') => <InvitationPage side={side} onZoom={openZoom} />,
-      // (side: 'left' | 'right') => <LovePage side={side} />,
-      // (side: 'left' | 'right') => <StoryTitlePage side={side} />,
-      // (side: 'left' | 'right') => <StoryPage side={side} from={0} folio="vi" />,
-      // (side: 'left' | 'right') => <StoryPage side={side} from={2} folio="vii" />,
-      (side: 'left' | 'right') => <ClosingPage side={side} />,
+      (side: Side, folio: string, last: boolean) => (
+        <TitlePage side={side} folio={folio} showScrollCue={last} />
+      ),
+      // (side: Side, folio: string, last: boolean) => (
+      //   <ScripturePage side={side} folio={folio} showScrollCue={last} />
+      // ),
+      (side: Side, folio: string, last: boolean) => (
+        <InvitationPage side={side} folio={folio} showScrollCue={last} onZoom={openZoom} />
+      ),
+      // (side: Side, folio: string, last: boolean) => (
+      //   <LovePage side={side} folio={folio} showScrollCue={last} />
+      // ),
+      // (side: Side, folio: string, last: boolean) => (
+      //   <StoryTitlePage side={side} folio={folio} showScrollCue={last} />
+      // ),
+      // (side: Side, folio: string, last: boolean) => (
+      //   <StoryPage side={side} folio={folio} showScrollCue={last} from={0} />
+      // ),
+      // (side: Side, folio: string, last: boolean) => (
+      //   <StoryPage side={side} folio={folio} showScrollCue={last} from={2} />
+      // ),
+      // (side: Side, folio: string, last: boolean) => (
+      //   <ClosingPage side={side} folio={folio} showScrollCue={last} />
+      // ),
     ];
   }, []);
 
-  /* ---- sheets: a spread per sheet on desktop, one page per sheet on
-         mobile, where a two-page spread cannot fit in portrait ---------- */
-  const sheets = useMemo(() => {
-    // Until the breakpoint is known, render no sheets. Nothing is lost
-    // visually: the closed cover covers them entirely, and the page cannot be
-    // scrolled until the book is opened.
-    if (!mounted) return [];
-
-    if (isMobile) {
-      return pages.map((page) => ({
-        front: page('right'),
+  /* ---- sheets: one page per sheet, always on the right ----------------
+     Every page is the front of its own sheet, so all content sits on the
+     right-hand side and each turn reveals blank paper on the left. */
+  const sheets = useMemo(
+    () =>
+      pages.map((page, index) => ({
+        front: page('right', folioFor(index), index === pages.length - 1),
+        // Blank backs carry no folio — unnumbered, as in a real book.
         back: <PageShell side="left">{null}</PageShell>,
-      }));
-    }
-    const spreads: { front: React.ReactNode; back: React.ReactNode }[] = [];
-    for (let i = 0; i < pages.length; i += 2) {
-      spreads.push({
-        front: pages[i]('right'),
-        back: pages[i + 1] ? pages[i + 1]('left') : <PageShell side="left">{null}</PageShell>,
-      });
-    }
-    return spreads;
-  }, [mounted, isMobile, pages]);
+      })),
+    [pages],
+  );
+
+  /* Previously the desktop layout paired pages into spreads, so odd pages sat
+     on the right and even pages on the left:
+
+     const spreads = [];
+     for (let i = 0; i < pages.length; i += 2) {
+       spreads.push({
+         front: pages[i]('right'),
+         back: pages[i + 1] ? pages[i + 1]('left') : <PageShell side="left">{null}</PageShell>,
+       });
+     }
+  */
 
   /* ---- scroll progress across the whole stage ------------------------ */
   const { scrollYProgress } = useScroll({
@@ -240,7 +265,7 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
             key={i}
             className="w-full max-w-md aspect-[3/4] rounded-lg overflow-hidden shadow-2xl border border-gold/20"
           >
-            {page('right')}
+            {page('right', folioFor(i), i === pages.length - 1)}
           </div>
         ))}
         {lightbox}

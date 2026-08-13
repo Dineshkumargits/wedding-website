@@ -1,9 +1,23 @@
 'use client';
 
 import React from 'react';
-import { Compass, Gem, Heart, MessageSquare, Star } from 'lucide-react';
+import { ChevronDown, Compass, Gem, Heart, MessageSquare, Star } from 'lucide-react';
 import Countdown from '@/components/Countdown';
 import InvitationCard from '@/components/InvitationCard';
+
+/**
+ * Props every page in the book shares.
+ *
+ * `folio` is the printed page number. It is passed in from the book rather
+ * than hardcoded per page, so that commenting a page in or out renumbers the
+ * rest automatically instead of leaving gaps.
+ */
+export interface PageProps {
+  side: 'left' | 'right';
+  folio?: string;
+  /** Set on the final page, to signal that the site continues below the book. */
+  showScrollCue?: boolean;
+}
 
 /**
  * A single leaf of the book. `side` decides which edge gets the gutter shadow,
@@ -12,19 +26,20 @@ import InvitationCard from '@/components/InvitationCard';
 export function PageShell({
   side,
   folio,
+  showScrollCue,
   children,
   className = '',
 }: {
   side: 'left' | 'right';
   folio?: string;
+  showScrollCue?: boolean;
   children: React.ReactNode;
   className?: string;
 }) {
   return (
     <div
-      className={`relative w-full h-full paper-surface overflow-hidden ${
-        side === 'right' ? 'gutter-left rounded-r-lg' : 'gutter-right rounded-l-lg'
-      }`}
+      className={`relative w-full h-full paper-surface overflow-hidden ${side === 'right' ? 'gutter-left rounded-r-lg' : 'gutter-right rounded-l-lg'
+        }`}
     >
       {/* Hairline rule framing the type block */}
       <div className="absolute inset-3 sm:inset-5 border border-gold/25 rounded-sm pointer-events-none" />
@@ -34,13 +49,21 @@ export function PageShell({
         className={`relative w-full h-full flex flex-col items-center justify-center text-center px-6 sm:px-9 py-8 ${className}`}
       >
         {children}
+
+        {showScrollCue && (
+          <span className="mt-4 flex flex-col items-center gap-1 text-gold-dark">
+            <span className="font-serif text-[10px] tracking-[0.3em] uppercase">
+              Keep scrolling
+            </span>
+            <ChevronDown className="w-3.5 h-3.5 animate-bounce" />
+          </span>
+        )}
       </div>
 
       {folio && (
         <span
-          className={`absolute bottom-3 text-[10px] font-serif tracking-[0.3em] text-ink-soft/65 uppercase ${
-            side === 'right' ? 'right-6' : 'left-6'
-          }`}
+          className={`absolute bottom-3 text-[10px] font-serif tracking-[0.3em] text-ink-soft/65 uppercase ${side === 'right' ? 'right-6' : 'left-6'
+            }`}
         >
           {folio}
         </span>
@@ -64,9 +87,9 @@ function Flourish() {
 /* PAGE 1 — the first thing seen when the cover swings open            */
 /* ------------------------------------------------------------------ */
 
-export function TitlePage({ side }: { side: 'left' | 'right' }) {
+export function TitlePage({ side, folio, showScrollCue }: PageProps) {
   return (
-    <PageShell side={side} folio="i">
+    <PageShell side={side} folio={folio} showScrollCue={showScrollCue}>
       <div className="w-14 h-14 rounded-full border border-gold/40 flex items-center justify-center relative mb-4 bg-paper-deep/50 shadow-[inset_0_1px_3px_rgba(26,39,64,0.12)]">
         <span className="font-serif text-base font-bold text-gold-foil">S &amp; F</span>
         <Star className="w-3 h-3 text-gold absolute -top-1.5 left-1/2 -translate-x-1/2" />
@@ -108,9 +131,9 @@ export function TitlePage({ side }: { side: 'left' | 'right' }) {
 /* PAGE 2 — the scripture facing the invitation                        */
 /* ------------------------------------------------------------------ */
 
-export function ScripturePage({ side }: { side: 'left' | 'right' }) {
+export function ScripturePage({ side, folio, showScrollCue }: PageProps) {
   return (
-    <PageShell side={side} folio="ii">
+    <PageShell side={side} folio={folio} showScrollCue={showScrollCue}>
       <Heart className="w-5 h-5 text-gold/60 mb-4" />
       <blockquote className="font-playfair italic text-sm sm:text-lg text-ink leading-relaxed max-w-[92%]">
         &ldquo;This thing proceedeth from the Lord.&rdquo;
@@ -139,13 +162,12 @@ export function ScripturePage({ side }: { side: 'left' | 'right' }) {
 
 export function InvitationPage({
   side,
+  folio,
+  showScrollCue,
   onZoom,
-}: {
-  side: 'left' | 'right';
-  onZoom: () => void;
-}) {
+}: PageProps & { onZoom: () => void }) {
   return (
-    <PageShell side={side} folio="iii" className="!px-4 sm:!px-6 !py-6">
+    <PageShell side={side} folio={folio} showScrollCue={showScrollCue} className="!px-4 sm:!px-6 !py-6">
       <p className="font-serif text-[10px] sm:text-[11px] tracking-[0.3em] uppercase text-gold-dark mb-2">
         Our Invitation
       </p>
@@ -153,9 +175,9 @@ export function InvitationPage({
       <div className="flex-1 w-full max-w-[360px] min-h-0">
         <InvitationCard onZoom={onZoom} />
       </div>
-      <p className="font-sans text-[10px] sm:text-[10px] text-ink-soft/85 tracking-widest uppercase mt-2">
+      {/* <p className="font-sans text-[10px] sm:text-[10px] text-ink-soft/85 tracking-widest uppercase mt-2">
         Tap the card to view the original
-      </p>
+      </p> */}
     </PageShell>
   );
 }
@@ -164,9 +186,9 @@ export function InvitationPage({
 /* PAGE 4 — the love scripture                                         */
 /* ------------------------------------------------------------------ */
 
-export function LovePage({ side }: { side: 'left' | 'right' }) {
+export function LovePage({ side, folio, showScrollCue }: PageProps) {
   return (
-    <PageShell side={side} folio="iv">
+    <PageShell side={side} folio={folio} showScrollCue={showScrollCue}>
       <Heart className="w-5 h-5 text-gold/60 mb-4 animate-pulse" />
       <blockquote className="font-playfair italic text-sm sm:text-lg text-ink leading-relaxed max-w-[92%]">
         &ldquo;And now these three remain: faith, hope and love. But the greatest of these is
@@ -184,9 +206,9 @@ export function LovePage({ side }: { side: 'left' | 'right' }) {
 /* PAGE 5 — the story title                                            */
 /* ------------------------------------------------------------------ */
 
-export function StoryTitlePage({ side }: { side: 'left' | 'right' }) {
+export function StoryTitlePage({ side, folio, showScrollCue }: PageProps) {
   return (
-    <PageShell side={side} folio="v">
+    <PageShell side={side} folio={folio} showScrollCue={showScrollCue}>
       <p className="font-serif text-[10px] sm:text-[11px] tracking-[0.35em] uppercase text-gold-dark mb-3">
         Our Story
       </p>
@@ -227,32 +249,32 @@ const milestones: {
   description: string;
   icon: React.ComponentType<{ className?: string }>;
 }[] = [
-  {
-    title: 'The Beginning',
-    description:
-      'Some meetings seem ordinary at the time, and only later reveal themselves as the start of everything.',
-    icon: Compass,
-  },
-  {
-    title: 'Growing Together',
-    description:
-      'Friendship deepened into love as they found in one another a shared faith, a shared devotion to family, and a shared idea of the life they hoped to build.',
-    icon: MessageSquare,
-  },
-  {
-    title: 'The Promise',
-    description:
-      'With the blessing of both families, they promised to walk the rest of the way together.',
-    icon: Gem,
-  },
-  {
-    title: 'The Holy Matrimony',
-    date: 'September 13, 2026',
-    description:
-      'Before God, and surrounded by the family and friends who have carried them here, they will make their vows at St. Fathima Shrine.',
-    icon: Heart,
-  },
-];
+    {
+      title: 'The Beginning',
+      description:
+        'Some meetings seem ordinary at the time, and only later reveal themselves as the start of everything.',
+      icon: Compass,
+    },
+    {
+      title: 'Growing Together',
+      description:
+        'Friendship deepened into love as they found in one another a shared faith, a shared devotion to family, and a shared idea of the life they hoped to build.',
+      icon: MessageSquare,
+    },
+    {
+      title: 'The Promise',
+      description:
+        'With the blessing of both families, they promised to walk the rest of the way together.',
+      icon: Gem,
+    },
+    {
+      title: 'The Holy Matrimony',
+      date: 'September 13, 2026',
+      description:
+        'Before God, and surrounded by the family and friends who have carried them here, they will make their vows at St. Fathima Shrine.',
+      icon: Heart,
+    },
+  ];
 
 function Milestone({ index }: { index: number }) {
   const { title, date, description, icon: Icon } = milestones[index];
@@ -280,17 +302,9 @@ function Milestone({ index }: { index: number }) {
   );
 }
 
-export function StoryPage({
-  side,
-  from,
-  folio,
-}: {
-  side: 'left' | 'right';
-  from: 0 | 2;
-  folio: string;
-}) {
+export function StoryPage({ side, folio, showScrollCue, from }: PageProps & { from: 0 | 2 }) {
   return (
-    <PageShell side={side} folio={folio} className="!justify-start gap-6 !pt-12">
+    <PageShell side={side} folio={folio} showScrollCue={showScrollCue} className="!justify-start gap-6 !pt-12">
       <Milestone index={from} />
       <span className="h-px w-1/2 bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
       <Milestone index={from + 1} />
@@ -302,9 +316,9 @@ export function StoryPage({
 /* PAGE 8 — the hand-off out of the book                               */
 /* ------------------------------------------------------------------ */
 
-export function ClosingPage({ side }: { side: 'left' | 'right' }) {
+export function ClosingPage({ side, folio, showScrollCue }: PageProps) {
   return (
-    <PageShell side={side} folio="viii">
+    <PageShell side={side} folio={folio} showScrollCue={showScrollCue}>
       <div className="flex gap-2 items-center justify-center text-gold mb-4">
         <span className="w-1 h-1 rounded-full bg-gold" />
         <Heart className="w-4 h-4" />
@@ -315,10 +329,14 @@ export function ClosingPage({ side }: { side: 'left' | 'right' }) {
         <span className="block">Continues</span>
       </h3>
       <Flourish />
+      {/* Commented out: this promised an RSVP form and a blessings wall, and
+          both sections are currently disabled in src/app/page.tsx. Restore it
+          alongside those sections.
       <p className="font-playfair italic text-[11px] sm:text-xs text-ink-soft leading-relaxed max-w-[85%]">
         Directions to the shrine, your RSVP, and a wall for your blessings are waiting just
         beyond these pages.
       </p>
+      */}
       <span className="font-serif text-[10px] tracking-[0.3em] uppercase text-gold-dark mt-6">
         Keep scrolling
       </span>
