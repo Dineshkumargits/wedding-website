@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { ChevronDown, Compass, Gem, Heart, MessageSquare, Star } from 'lucide-react';
 import Countdown from '@/components/Countdown';
 import InvitationCard from '@/components/InvitationCard';
@@ -152,6 +153,78 @@ export function ScripturePage({ side, folio, showScrollCue }: PageProps) {
       <span className="font-serif text-[10px] tracking-[0.3em] uppercase text-gold-dark mt-6">
         The invitation follows
       </span>
+    </PageShell>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* PAGE — the couple, mounted like a print in an album                 */
+/* ------------------------------------------------------------------ */
+
+/** A photo corner, as used to hold prints into an album page. */
+function PhotoCorner({ position }: { position: 'tl' | 'tr' | 'bl' | 'br' }) {
+  const place = {
+    tl: '-top-1 -left-1 rounded-tl-sm',
+    tr: '-top-1 -right-1 rounded-tr-sm',
+    bl: '-bottom-1 -left-1 rounded-bl-sm',
+    br: '-bottom-1 -right-1 rounded-br-sm',
+  }[position];
+
+  const corner = {
+    tl: 'polygon(0 0, 100% 0, 0 100%)',
+    tr: 'polygon(100% 0, 100% 100%, 0 0)',
+    bl: 'polygon(0 100%, 0 0, 100% 100%)',
+    br: 'polygon(100% 100%, 0 100%, 100% 0)',
+  }[position];
+
+  return (
+    <span
+      aria-hidden
+      className={`absolute w-6 h-6 sm:w-7 sm:h-7 bg-gradient-to-br from-gold-dark/80 to-gold/50 shadow-sm ${place}`}
+      style={{ clipPath: corner }}
+    />
+  );
+}
+
+export function PortraitPage({ side, folio, showScrollCue }: PageProps) {
+  return (
+    <PageShell
+      side={side}
+      folio={folio}
+      showScrollCue={showScrollCue}
+      className="!px-5 sm:!px-8 !py-7"
+    >
+      <p className="font-serif text-[10px] sm:text-[11px] tracking-[0.3em] uppercase text-gold-dark mb-3">
+        The Couple
+      </p>
+
+      {/* Height-driven rather than width-driven, so the print always fits the
+          page no matter how short the viewport is. */}
+      <div className="flex-1 min-h-0 w-full flex items-center justify-center">
+        <div className="relative h-full aspect-[9/16] max-w-full -rotate-[1.2deg]">
+          {/* The white border of a physical print */}
+          <div className="relative w-full h-full bg-[#FFFDF8] p-1.5 sm:p-2 pb-5 sm:pb-6 shadow-[0_12px_30px_rgba(26,39,64,0.28)]">
+            <div className="relative w-full h-full overflow-hidden bg-paper-deep">
+              <Image
+                src="/sanjay-fathima-portrait.png"
+                alt="J. Joseph Sanjay and B. Fathima Rani"
+                fill
+                className="object-cover"
+                sizes="(max-width: 767px) 60vw, 320px"
+              />
+            </div>
+          </div>
+
+          <PhotoCorner position="tl" />
+          <PhotoCorner position="tr" />
+          <PhotoCorner position="bl" />
+          <PhotoCorner position="br" />
+        </div>
+      </div>
+
+      <p className="font-playfair italic text-[11px] sm:text-xs text-ink-soft mt-3">
+        Sanjay &amp; Fathima Rani
+      </p>
     </PageShell>
   );
 }

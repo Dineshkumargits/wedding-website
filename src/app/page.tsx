@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import MusicPlayer from '@/components/MusicPlayer';
 import Venue from '@/components/Venue';
@@ -110,8 +111,32 @@ function PageBody() {
       </section> */}
 
       {/* --- FOOTER --- */}
-      <footer className="relative py-16 px-4 bg-navy-dark/80 border-t border-gold/15 text-center mt-auto">
+      <footer className="relative pt-10 pb-16 px-4 bg-navy-dark/80 border-t border-gold/15 text-center mt-auto">
         <div className="max-w-md mx-auto flex flex-col items-center gap-4 relative z-10">
+          {/*
+            The cutout has a transparent background, so the couple can stand
+            free against the navy rather than sitting in a box. The glow behind
+            and the soft ellipse beneath give them something to stand on.
+          */}
+          <div className="relative flex justify-center items-end w-full">
+            <div
+              aria-hidden
+              className="absolute bottom-0 w-56 h-40 bg-[radial-gradient(ellipse_at_bottom,rgba(212,175,55,0.22)_0%,transparent_70%)]"
+            />
+            <Image
+              src="/sanjay-fathima-cutout.png"
+              alt="J. Joseph Sanjay and B. Fathima Rani"
+              width={909}
+              height={2308}
+              sizes="(max-width: 640px) 40vw, 200px"
+              className="relative h-52 sm:h-64 w-auto object-contain drop-shadow-[0_16px_22px_rgba(0,0,0,0.55)]"
+            />
+            <div
+              aria-hidden
+              className="absolute bottom-0 w-32 h-3 rounded-[100%] bg-[radial-gradient(ellipse,rgba(0,0,0,0.55)_0%,transparent_75%)]"
+            />
+          </div>
+
           <div className="flex gap-2 items-center justify-center text-gold">
             <span className="w-1.5 h-1.5 rounded-full bg-gold" />
             <Heart className="w-4 h-4" />

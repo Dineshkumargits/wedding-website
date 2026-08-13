@@ -11,7 +11,7 @@ import {
   useTransform,
 } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Heart, Key, Star, X } from 'lucide-react';
+import { Heart, Key, X } from 'lucide-react';
 import { useParallaxPointer } from '@/components/parallax/ParallaxProvider';
 import BookSheet from './BookSheet';
 import {
@@ -19,6 +19,7 @@ import {
   InvitationPage,
   LovePage,
   PageShell,
+  PortraitPage,
   ScripturePage,
   StoryPage,
   StoryTitlePage,
@@ -78,6 +79,11 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
       ),
       // (side: Side, folio: string, last: boolean) => (
       //   <ScripturePage side={side} folio={folio} showScrollCue={last} />
+      // ),
+      // The couple now appear on the cover, beneath the names, so they no
+      // longer need a page of their own.
+      // (side: Side, folio: string, last: boolean) => (
+      //   <PortraitPage side={side} folio={folio} showScrollCue={last} />
       // ),
       (side: Side, folio: string, last: boolean) => (
         <InvitationPage side={side} folio={folio} showScrollCue={last} onZoom={openZoom} />
@@ -385,33 +391,15 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
               className="absolute top-0 right-0 h-full w-full md:w-1/2"
             >
               {/* Outside of the cover */}
-              <div className="absolute inset-0 backface-hidden cover-surface rounded-r-lg border border-gold/40 shadow-[6px_10px_40px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col items-center justify-center px-6 text-center">
+              <div className="absolute inset-0 backface-hidden cover-surface rounded-r-lg border border-gold/40 shadow-[6px_10px_40px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col items-center justify-center px-6 py-7 text-center">
                 <div className="absolute inset-3 border-2 border-double border-gold/45 rounded-md pointer-events-none" />
                 <div className="absolute inset-5 border border-gold/25 rounded-sm pointer-events-none" />
 
-                <span className="font-serif text-[10px] sm:text-[11px] tracking-[0.35em] uppercase text-gold-dark mb-4">
+                <span className="font-serif text-[10px] sm:text-[11px] tracking-[0.35em] uppercase text-gold-dark shrink-0">
                   The Matrimony of
                 </span>
 
-                {/* Gold seal */}
-                <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 border-gold flex items-center justify-center bg-paper-deep/70 shadow-[0_0_30px_rgba(212,175,55,0.35),inset_0_1px_4px_rgba(255,255,255,0.8)] mb-5">
-                  <div
-                    className="absolute inset-2 rounded-full border border-dashed border-gold/45 animate-spin"
-                    style={{ animationDuration: '14s' }}
-                  />
-                  <div className="flex flex-col items-center text-center">
-                    <Heart className="w-5 h-5 text-gold-dark mb-1" />
-                    <span className="font-serif text-[11px] sm:text-[12px] tracking-[0.2em] uppercase font-bold text-gold-dark">
-                      September 13
-                    </span>
-                    <span className="font-sans text-[10px] text-ink-soft/85 uppercase tracking-widest">
-                      2026
-                    </span>
-                  </div>
-                  <Star className="w-3 h-3 text-gold absolute -top-1.5 left-1/2 -translate-x-1/2" />
-                </div>
-
-                <h2 className="font-serif text-lg sm:text-2xl font-extrabold text-gold-foil leading-tight">
+                <h2 className="mt-3 shrink-0 font-serif text-lg sm:text-2xl font-extrabold text-gold-foil leading-tight">
                   J. Joseph Sanjay
                   <span className="block font-playfair font-normal italic text-ink-soft/85 text-sm sm:text-base my-0.5">
                     weds
@@ -419,14 +407,44 @@ export default function BookExperience({ onOpen }: { onOpen: () => void }) {
                   B. Fathima Rani
                 </h2>
 
-                <p className="font-playfair italic text-[11px] sm:text-xs text-ink-soft leading-relaxed max-w-[85%] mt-4">
-                  &ldquo;A celebration of faith, hope, and love. Join us as we begin our
-                  forever.&rdquo;
-                </p>
+                {/*
+                  The couple sit directly beneath the names, as on a printed
+                  invitation card. The cutout carries no background of its own,
+                  so they stand on the cover itself; the glow and the ellipse
+                  beneath give them ground rather than leaving them floating.
+                  Height-driven, so the figure shrinks to fit a short cover
+                  instead of pushing the button off the card.
+                */}
+                <div className="relative flex-1 min-h-0 w-full flex items-end justify-center mt-2">
+                  <div
+                    aria-hidden
+                    className="absolute bottom-1 w-40 h-24 bg-[radial-gradient(ellipse_at_bottom,rgba(212,175,55,0.3)_0%,transparent_70%)]"
+                  />
+                  <Image
+                    src="/sanjay-fathima-cutout.png"
+                    alt="J. Joseph Sanjay and B. Fathima Rani"
+                    width={909}
+                    height={2308}
+                    priority
+                    sizes="(max-width: 767px) 45vw, 220px"
+                    className="relative h-full w-auto max-w-full object-contain drop-shadow-[0_10px_16px_rgba(26,39,64,0.35)]"
+                  />
+                  <div
+                    aria-hidden
+                    className="absolute bottom-0 w-24 h-2 rounded-[100%] bg-[radial-gradient(ellipse,rgba(26,39,64,0.4)_0%,transparent_75%)]"
+                  />
+                </div>
+
+                <div className="mt-2 font-serif text-gold-dark tracking-[0.3em] text-xs sm:text-sm shrink-0">
+                  13 . 09 . 2026
+                </div>
+                <div className="font-sans text-[10px] tracking-[0.18em] uppercase text-ink-soft/80 mt-1 shrink-0">
+                  St. Fathima Shrine, Krishnagiri
+                </div>
 
                 <button
                   onClick={handleOpen}
-                  className="mt-6 bg-gold-gradient text-navy-dark font-serif font-bold py-3 px-7 rounded-full uppercase tracking-[0.2em] text-[11px] sm:text-xs flex items-center gap-2 shadow-[0_4px_20px_rgba(212,175,55,0.45)] hover:scale-105 active:scale-95 transition-transform duration-300 relative overflow-hidden group cursor-pointer"
+                  className="shrink-0 mt-4 bg-gold-gradient text-navy-dark font-serif font-bold py-3 px-7 rounded-full uppercase tracking-[0.2em] text-[11px] sm:text-xs flex items-center gap-2 shadow-[0_4px_20px_rgba(212,175,55,0.45)] hover:scale-105 active:scale-95 transition-transform duration-300 relative overflow-hidden group cursor-pointer"
                 >
                   <span className="absolute inset-0 bg-white/25 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                   <Key className="w-3.5 h-3.5" /> Enter Celebration
