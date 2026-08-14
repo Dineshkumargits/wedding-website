@@ -155,6 +155,113 @@ html {
    counterpart to the gold-on-navy utilities above.
    --------------------------------------------------------------- */
 
+/* Falling jasmine. Two nested elements because one element can only run a
+   single transform timeline: the outer falls, the inner sways and turns.
+   Transform-only, so the compositor handles it without layout or paint. */
+@keyframes petal-fall {
+  from {
+    transform: translate3d(0, -15vh, 0);
+  }
+  to {
+    transform: translate3d(0, 110vh, 0);
+  }
+}
+
+@keyframes petal-sway {
+  from {
+    transform: translateX(-16px) rotate(-30deg);
+  }
+  to {
+    transform: translateX(16px) rotate(30deg);
+  }
+}
+
+.petal-fall {
+  animation-name: petal-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.petal-sway {
+  animation-name: petal-sway;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .petal-fall,
+  .petal-sway {
+    animation: none;
+  }
+  /* Without the fall they would pile up at the top edge, so hide them. */
+  .petal-fall {
+    display: none;
+  }
+}
+
+/* The invitation card's entrance. Pure CSS so it plays on first paint rather
+   than waiting for hydration — the card is the first thing a guest sees, and
+   it must not depend on JavaScript having arrived. */
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.card-enter {
+  animation: card-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes cue-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.cue-enter {
+  animation: cue-in 0.8s ease-out 1.6s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-enter,
+  .cue-enter {
+    animation: none;
+  }
+}
+
+/* Scroll reveal. The visible state is the default so server-rendered content
+   is readable before (and without) JavaScript; the hidden state is added by
+   Reveal on mount and removed when the element scrolls into view. */
+.reveal {
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-hidden {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transition: none;
+  }
+  .reveal-hidden {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .backface-hidden {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;

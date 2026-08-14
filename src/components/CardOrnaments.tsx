@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * A shrine archway drawn in gold line, sitting behind the couple on the cover.
+ * A shrine archway drawn in gold line, sitting behind the couple on the card.
  *
  * It solves a compositional problem: the cutout is tall and narrow, so it left
  * wide empty margins and nothing for the figures to stand in. The arch fills
@@ -10,7 +10,7 @@ import React from 'react';
  *
  * Pure SVG — no image asset, and it scales cleanly to any cover size.
  */
-export function CoverArch() {
+export function CardArch() {
   return (
     <div
       aria-hidden
