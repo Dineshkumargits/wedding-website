@@ -1,0 +1,135 @@
+{
+  "id": "prakash-bella",
+  "meta": {
+    "siteTitle": "Wedding Celebration of Prakashraj & Bella | பிரகாஷ்ராஜ் & பெல்லா",
+    "siteDescription": "You are cordially invited to celebrate the wedding of D. Prakashraj & M. Bella on November 20, 2026 at Kamalam Thirumana Mandapam, Rasipuram.",
+    "ogLocale": "en_IN"
+  },
+  "couple": {
+    "initials": "P & B",
+    "displayNames": "Prakashraj & Bella",
+    "groom": {
+      "fullName": "D. Prakashraj",
+      "shortName": "Prakashraj",
+      "qualification": "DCSE. (Tata Croma Infiniti Retail Ltd.)",
+      "parents": {
+        "line1": "Mr. V. Dhanabal",
+        "line2": "Mrs. D. Nagamani",
+        "city": "Pinnaranallur, Rasipuram"
+      }
+    },
+    "bride": {
+      "fullName": "M. Bella",
+      "shortName": "Bella",
+      "qualification": "B.Ed. (Kalaimagal Matriculation School)",
+      "parents": {
+        "line1": "Mr. V. Mayavan (a) Abraham",
+        "line2": "Mrs. M.S. Malar (a) Saral",
+        "city": "Kuchikkadu, Rasipuram"
+      }
+    },
+    "heroImage": {
+      "src": "/prakash-bella.png",
+      "alt": "D. Prakashraj and M. Bella",
+      "width": 1024,
+      "height": 1365
+    }
+  },
+  "invitationCard": {
+    "scannedImage": {
+      "src": "/prakash-bella-wedding-invitation-and-guest-list.png",
+      "alt": "Prakashraj & Bella Wedding Invitation and Guest List"
+    },
+    "topScripture": {
+      "verse": "ஸ்ரீ சீனிவாசப் பெருமாள் துணை • உ • ஸ்ரீ வீரபத்திர அம்மன் துணை",
+      "citation": "சுபமுகூர்த்த நன்னாள்"
+    },
+    "cardTitle": "Wedding Invitation | திருமண அழைப்பிதழ்",
+    "solicitationText": "இல்வாழ்க்கைத் துணைவியாக்கப் பெரியோர்களால் நிச்சயித்த வண்ணம் இத்திருமணம், இராசிபுரம், புதிய பஸ்நிலையம் அருகில், கமலம் திருமண மண்டபத்தில் நடைபெறுவதால் தாங்கள் தங்கள் சுற்றமும் நட்பும் சூழ வருகைதந்து மணமக்களை வாழ்த்தியருள அன்புடன் அழைக்கின்றோம்.",
+    "connector": "weds",
+    "compliments": {
+      "label": "தங்கள் அன்புள்ள / With Best Compliments From:",
+      "from": "இருவீட்டார், உற்றார் உறவினர்கள் & நண்பர்கள்"
+    }
+  },
+  "wedding": {
+    "dateTimeIso": "2026-11-20T09:15:00+05:30",
+    "dateFormatted": "Friday, 20 November 2026",
+    "dateNumeric": "20 . 11 . 2026",
+    "dateFormal": "வெள்ளிக்கிழமை, 20 நவம்பர் 2026 (காலை 9:15 - 10:15)",
+    "dateShort": "November 20, 2026",
+    "summaryLocation": "Rasipuram, Namakkal District",
+    "scripture": {
+      "quote": "மங்களகரமான சுபமுகூர்த்த நன்னாளில் இரு மனங்கள் இணையும் இனிய வைபவம்",
+      "reference": "கார்த்திகை 4, பராபவ வருடம்"
+    }
+  },
+  "events": {
+    "ceremony": {
+      "tag": "Muhurtham",
+      "title": "Subha Muhurtham | சுப முகூர்த்தம்",
+      "description": "Join us as we unite in holy matrimony amidst sacred rituals, family blessings, and timeless traditions.",
+      "date": "Friday, November 20, 2026",
+      "time": "9:15 AM - 10:15 AM",
+      "invitationTimeLabel": "காலை 9.15 மணிக்குமேல் 10.15 மணிக்குள்",
+      "venueName": "Kamalam Thirumana Mandapam (கமலம் திருமண மண்டபம்)",
+      "venueLocation": "Near New Bus Stand, Rasipuram"
+    }
+  },
+  "location": {
+    "addressTitle": "Kamalam Thirumana Mandapam, Near New Bus Stand, Rasipuram, Namakkal District",
+    "googleMapsUrl": "https://maps.google.com/?q=Kamalam+Thirumana+Mandapam+Rasipuram",
+    "mapEmbedSrc": "https://www.google.com/maps?q=Kamalam+Thirumana+Mandapam+Rasipuram&output=embed",
+    "qrImage": {
+      "src": "/prakash-bella-location-qr.png",
+      "alt": "Kamalam Thirumana Mandapam Google Maps Location QR Code"
+    }
+  },
+  "music": {
+    "src": "/wedding-song.mp3",
+    "autoplayHintPlaying": "Now Playing 🎵",
+    "autoplayHintPaused": "Play Wedding Music 🎵"
+  },
+  "sections": {
+    "hero": {
+      "subtitle": "The Wedding Celebration of",
+      "connector": "weds",
+      "scrollCue": "Scroll"
+    },
+    "countdown": {
+      "eyebrow": "Save the Date",
+      "completedTitle": "The Celebration Has Begun! | மங்கள நன்னாள்",
+      "completedMessage": "Join us in celebrating this joyous union and blessing the newly wedded couple."
+    },
+    "invitation": {
+      "eyebrow": "Our Invitation",
+      "title": "You Are Cordially Invited | அன்புடன் அழைக்கின்றோம்"
+    },
+    "venue": {
+      "eyebrow": "Directions & Venue",
+      "title": "Ceremony & Mandapam Details",
+      "navigateButton": "Navigate",
+      "qrCardTitle": "Mandapam Location QR",
+      "qrCardSubtitle": "Scan with your phone camera to open Google Maps directly",
+      "qrCardBadge": "Scan 📱",
+      "qrModalTitle": "Kamalam Thirumana Mandapam",
+      "qrModalSubtitle": "Scan this QR code with your mobile camera to open Google Maps navigation to Rasipuram.",
+      "qrModalButton": "Open in Google Maps App"
+    },
+    "rsvp": {
+      "eyebrow": "Confirm Presence",
+      "title": "Will You Celebrate With Us?",
+      "heading": "RSVP Registration",
+      "deadlineNotice": "Please respond by November 10, 2026, so we can finalize arrangements."
+    },
+    "guestbook": {
+      "eyebrow": "Shower Blessings",
+      "title": "Guest Blessings Wall | வாழ்த்து மடல்",
+      "formHeading": "Leave a Blessing",
+      "formSubtitle": "Share your love, congratulations, or special prayers for Prakashraj & Bella."
+    },
+    "footer": {
+      "message": "தாங்கள் தங்கள் சுற்றமும் நட்பும் சூழ வருகைதந்து மணமக்களை வாழ்த்தியருள அன்புடன் அழைக்கின்றோம்."
+    }
+  }
+}

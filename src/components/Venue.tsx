@@ -5,13 +5,37 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { MapPin, Calendar, Clock, Map, Compass, QrCode, X } from 'lucide-react';
 import TiltCard from '@/components/TiltCard';
+import { useWeddingConfig } from './WeddingProvider';
 
 export default function Venue() {
   const [showQRModal, setShowQRModal] = useState(false);
+  const weddingConfig = useWeddingConfig();
 
-  const googleMapsUrl = 'https://maps.google.com/?q=St.+Fathima+Shrine,+Krishnagiri';
-  // Standard location embedded map for St Fathima Shrine, Krishnagiri
-  const mapEmbedSrc = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3899.4674681729094!2d78.21360067579726!3d12.551222887727105!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bac164db6e5f9cb%3A0xe67db50afb817e0b!2sSt.%20Fathima%20Shrine!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin';
+  const eventList = React.useMemo(() => {
+    if (Array.isArray(weddingConfig.events)) {
+      return weddingConfig.events;
+    }
+    const eventsObj = weddingConfig.events || {};
+    if (Array.isArray(eventsObj.list)) {
+      return eventsObj.list;
+    }
+    const list: any[] = [];
+    if (eventsObj.ceremony) list.push(eventsObj.ceremony);
+    if (eventsObj.reception) list.push(eventsObj.reception);
+    Object.keys(eventsObj).forEach((k) => {
+      if (k !== 'ceremony' && k !== 'reception' && k !== 'list') {
+        const val = eventsObj[k];
+        if (val && typeof val === 'object' && val.title && val.date) {
+          list.push(val);
+        }
+      }
+    });
+    return list.filter(Boolean);
+  }, [weddingConfig.events]);
+
+  const { location, sections } = weddingConfig;
+  const googleMapsUrl = location.googleMapsUrl;
+  const mapEmbedSrc = location.mapEmbedSrc;
 
   return (
     <div className="py-12">
@@ -19,87 +43,65 @@ export default function Venue() {
 
         {/* Left column: Event cards */}
         <div className="lg:col-span-7 flex flex-col justify-between gap-6">
-          {/* Card 1: Holy Matrimony Ceremony */}
-          <TiltCard maxTilt={8} className="flex-1 flex flex-col">
-            <motion.div
-              whileHover={{ y: -5 }}
-              className="glass-card p-6 rounded-2xl border border-gold/15 relative overflow-hidden flex-1 flex flex-col justify-between group h-full w-full"
-            >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-bl-full flex items-center justify-center group-hover:bg-gold/10 transition-colors">
-                <Compass className="w-8 h-8 text-gold/40 group-hover:text-gold/70 transition-colors" />
-              </div>
+          {eventList.map((event, index) => {
+            const isReception =
+              event.tag?.toLowerCase().includes('reception') ||
+              event.title?.toLowerCase().includes('reception') ||
+              event.title?.includes('விருந்து');
+            const Icon = isReception ? Map : Compass;
 
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="bg-gold-gradient text-navy-dark text-xs px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold">
-                    Ceremony
-                  </span>
-                </div>
-                <h4 className="font-serif text-xl sm:text-2xl text-gold-light font-bold mb-3">
-                  Holy Matrimony
-                </h4>
-                <p className="text-sm text-ivory/80 mb-4 leading-relaxed">
-                  Join us as we exchange vows, promise lifelong love, and receive the blessings of God in Holy Matrimony.
-                </p>
-              </div>
+            return (
+              <TiltCard key={event.title || index} maxTilt={8} className="flex-1 flex flex-col">
+                <motion.div
+                  whileHover={{ y: -5 }}
+                  className="glass-card p-6 rounded-2xl border border-gold/15 relative overflow-hidden flex-1 flex flex-col justify-between group h-full w-full"
+                >
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-bl-full flex items-center justify-center group-hover:bg-gold/10 transition-colors">
+                    <Icon className="w-8 h-8 text-gold/40 group-hover:text-gold/70 transition-colors" />
+                  </div>
 
-              <div className="space-y-2 border-t border-gold/10 pt-4 mt-4 text-xs sm:text-sm text-ivory/70 font-sans">
-                <div className="flex items-center gap-3">
-                  <Calendar className="w-4 h-4 text-gold" />
-                  <span>Sunday, September 13, 2026</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Clock className="w-4 h-4 text-gold" />
-                  <span>10:30 AM Onwards</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <MapPin className="w-4 h-4 text-gold" />
-                  <span>St. Fathima Shrine, Krishnagiri</span>
-                </div>
-              </div>
-            </motion.div>
-          </TiltCard>
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="bg-gold-gradient text-navy-dark text-xs px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold">
+                        {event.tag}
+                      </span>
+                    </div>
+                    <h4 className="font-serif text-xl sm:text-2xl text-gold-light font-bold mb-3">
+                      {event.title}
+                    </h4>
+                    {event.description && (
+                      <p className="text-sm text-ivory/80 mb-4 leading-relaxed">
+                        {event.description}
+                      </p>
+                    )}
+                  </div>
 
-          {/* Card 2: Wedding Reception */}
-          <TiltCard maxTilt={8} className="flex-1 flex flex-col">
-            <motion.div
-              whileHover={{ y: -5 }}
-              className="glass-card p-6 rounded-2xl border border-gold/15 relative overflow-hidden flex-1 flex flex-col justify-between group h-full w-full"
-            >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-bl-full flex items-center justify-center group-hover:bg-gold/10 transition-colors">
-                <Map className="w-8 h-8 text-gold/40 group-hover:text-gold/70 transition-colors" />
-              </div>
-
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="bg-gold-gradient text-navy-dark text-xs px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold">
-                    Reception
-                  </span>
-                </div>
-                <h4 className="font-serif text-xl sm:text-2xl text-gold-light font-bold mb-3">
-                  The Reception
-                </h4>
-                <p className="text-sm text-ivory/80 mb-4 leading-relaxed">
-                  Celebrate the beginning of our new chapter with food, drinks, and merrymaking. We cannot wait to celebrate with you!
-                </p>
-              </div>
-
-              <div className="space-y-2 border-t border-gold/10 pt-4 mt-4 text-xs sm:text-sm text-ivory/70 font-sans">
-                <div className="flex items-center gap-3">
-                  <Calendar className="w-4 h-4 text-gold" />
-                  <span>Sunday, September 13, 2026</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Clock className="w-4 h-4 text-gold" />
-                  <span>12:30 PM Onwards</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <MapPin className="w-4 h-4 text-gold" />
-                  <span>St. Fathima Shrine Campus, Krishnagiri</span>
-                </div>
-              </div>
-            </motion.div>
-          </TiltCard>
+                  <div className="space-y-2 border-t border-gold/10 pt-4 mt-4 text-xs sm:text-sm text-ivory/70 font-sans">
+                    {event.date && (
+                      <div className="flex items-center gap-3">
+                        <Calendar className="w-4 h-4 text-gold shrink-0" />
+                        <span>{event.date}</span>
+                      </div>
+                    )}
+                    {event.time && (
+                      <div className="flex items-center gap-3">
+                        <Clock className="w-4 h-4 text-gold shrink-0" />
+                        <span>{event.time}</span>
+                      </div>
+                    )}
+                    {(event.venueName || event.venueLocation) && (
+                      <div className="flex items-center gap-3">
+                        <MapPin className="w-4 h-4 text-gold shrink-0" />
+                        <span>
+                          {[event.venueName, event.venueLocation].filter(Boolean).join(', ')}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </TiltCard>
+            );
+          })}
         </div>
 
         {/* Right column: Map and QR code */}
@@ -123,7 +125,7 @@ export default function Venue() {
                 rel="noopener noreferrer"
                 className="bg-navy-dark border border-gold/40 text-gold-light hover:bg-gold-gradient hover:text-navy-dark px-4 py-2 rounded-full text-xs font-serif uppercase tracking-widest flex items-center gap-2 shadow-2xl transition-all duration-300"
               >
-                <MapPin className="w-3.5 h-3.5" /> Navigate
+                <MapPin className="w-3.5 h-3.5" /> {sections.venue.navigateButton}
               </a>
             </div>
           </div>
@@ -140,15 +142,15 @@ export default function Venue() {
                 </div>
                 <div>
                   <h5 className="font-serif text-sm sm:text-base text-gold-light font-bold">
-                    Location QR Code
+                    {sections.venue.qrCardTitle}
                   </h5>
                   <p className="text-xs text-ivory/60 mt-0.5 font-sans">
-                    Click to expand and scan to navigate on your mobile
+                    {sections.venue.qrCardSubtitle}
                   </p>
                 </div>
               </div>
               <span className="text-xs font-serif uppercase text-gold/60 group-hover:text-gold transition-colors tracking-widest hidden sm:inline">
-                Scan 📱
+                {sections.venue.qrCardBadge}
               </span>
             </div>
           </TiltCard>
@@ -182,17 +184,17 @@ export default function Venue() {
               </button>
 
               <h4 className="font-serif text-xl text-gold-light font-bold mb-2">
-                Scan for Directions
+                {sections.venue.qrModalTitle}
               </h4>
               <p className="text-xs text-ivory/70 mb-6 font-sans">
-                Scan this QR code with your mobile camera to open Google Maps navigation directly.
+                {sections.venue.qrModalSubtitle}
               </p>
 
               {/* QR Image Frame */}
               <div className="relative w-48 h-48 mx-auto bg-white p-3 rounded-xl shadow-inner border border-gold-light/40 flex items-center justify-center">
                 <Image
-                  src="/location-qr.jpeg"
-                  alt="St. Fathima Shrine Google Map Location QR Code"
+                  src={location.qrImage.src}
+                  alt={location.qrImage.alt}
                   width={180}
                   height={180}
                   className="object-contain"
@@ -202,7 +204,7 @@ export default function Venue() {
 
               <div className="mt-6 flex flex-col gap-2">
                 <p className="text-[11px] text-gold/60 uppercase tracking-widest font-serif">
-                  St. Fathima Shrine Campus, Krishnagiri
+                  {location.addressTitle}
                 </p>
                 <a
                   href={googleMapsUrl}
@@ -210,7 +212,7 @@ export default function Venue() {
                   rel="noopener noreferrer"
                   className="bg-gold-gradient text-navy-dark py-2.5 rounded-full text-xs font-serif uppercase tracking-widest font-bold shadow-lg hover:scale-105 active:scale-95 transition-all mt-2"
                 >
-                  Open in Google Maps App
+                  {sections.venue.qrModalButton}
                 </a>
               </div>
             </motion.div>

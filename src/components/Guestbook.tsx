@@ -4,8 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, MessageSquarePlus, PenTool, Loader2, Send } from 'lucide-react';
 import { Wish } from '@/lib/db';
+import { useWeddingConfig } from './WeddingProvider';
 
 export default function Guestbook() {
+  const weddingConfig = useWeddingConfig();
   const [wishes, setWishes] = useState<Wish[]>([]);
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
@@ -72,7 +74,7 @@ export default function Guestbook() {
         day: 'numeric',
         year: 'numeric',
       });
-    } catch (e) {
+    } catch {
       return '';
     }
   };
@@ -85,10 +87,10 @@ export default function Guestbook() {
         <div className="lg:col-span-4 lg:sticky lg:top-24">
           <div className="glass-card p-6 rounded-2xl border border-gold/15 relative shadow-lg">
             <h4 className="font-serif text-lg sm:text-xl text-gold-light font-bold mb-2 flex items-center gap-2">
-              <PenTool className="w-5 h-5 text-gold" /> Leave a Blessing
+              <PenTool className="w-5 h-5 text-gold" /> {weddingConfig.sections.guestbook.formHeading}
             </h4>
             <p className="text-xs text-ivory/60 mb-6 font-sans">
-              Share your love, congratulations, or special prayers for Sanjay & Fathima Rani.
+              {weddingConfig.sections.guestbook.formSubtitle}
             </p>
 
             {error && <p className="text-xs text-red-400 mb-3">{error}</p>}

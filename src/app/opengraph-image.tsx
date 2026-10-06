@@ -1,8 +1,10 @@
 import { ImageResponse } from 'next/og';
+import { headers } from 'next/headers';
+import { getWeddingConfig } from '@/data/wedding';
 
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
-export const alt = 'Wedding invitation of J. Joseph Sanjay & B. Fathima Rani, 13 September 2026';
+export const alt = 'Wedding Invitation';
 
 /**
  * The card guests see when the link is shared on WhatsApp, which is how this
@@ -13,7 +15,20 @@ export const alt = 'Wedding invitation of J. Joseph Sanjay & B. Fathima Rani, 13
  * `display: flex`. No font files are loaded, so this stays self-contained and
  * cannot fail at build time on a missing asset.
  */
-export default function OpengraphImage() {
+export default async function OpengraphImage() {
+  let host = '';
+  try {
+    const headersList = await headers();
+    host = headersList.get('host') || '';
+  } catch {
+    // fallback during static rendering
+  }
+
+  const config = getWeddingConfig(host);
+  const ceremonyVenue = config.events.ceremony
+    ? `${config.events.ceremony.venueName}, ${config.events.ceremony.venueLocation}`
+    : config.wedding.summaryLocation;
+
   return new ImageResponse(
     (
       <div
@@ -66,7 +81,7 @@ export default function OpengraphImage() {
             marginBottom: 28,
           }}
         >
-          Save the Date
+          {config.sections.countdown.eyebrow}
         </div>
 
         <div
@@ -80,19 +95,16 @@ export default function OpengraphImage() {
             lineHeight: 1.18,
           }}
         >
-          <div style={{ display: 'flex' }}>J. Joseph Sanjay</div>
+          <div style={{ display: 'flex' }}>{config.couple.groom.fullName}</div>
           <div style={{ display: 'flex', fontSize: 34, color: '#D4AF37', margin: '10px 0' }}>
-            weds
+            {config.invitationCard.connector}
           </div>
-          <div style={{ display: 'flex' }}>B. Fathima Rani</div>
+          <div style={{ display: 'flex' }}>{config.couple.bride.fullName}</div>
         </div>
 
         {/* Flourish */}
         <div style={{ display: 'flex', alignItems: 'center', margin: '38px 0 26px' }}>
           <div style={{ width: 150, height: 1, backgroundColor: 'rgba(212,175,55,0.5)' }} />
-          {/* A rotated square rather than a glyph: any character outside the
-              default font makes Satori fetch a font at build time, which fails
-              in a sandboxed CI environment. */}
           <div
             style={{
               width: 12,
@@ -107,7 +119,7 @@ export default function OpengraphImage() {
         </div>
 
         <div style={{ fontSize: 34, letterSpacing: 6, color: '#FDFBF7' }}>
-          13 . 09 . 2026
+          {config.wedding.dateNumeric}
         </div>
 
         <div
@@ -119,7 +131,7 @@ export default function OpengraphImage() {
             textTransform: 'uppercase',
           }}
         >
-          St. Fathima Shrine, Krishnagiri
+          {ceremonyVenue}
         </div>
       </div>
     ),

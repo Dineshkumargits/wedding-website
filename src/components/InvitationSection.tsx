@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import InvitationCard from './InvitationCard';
 import Reveal from './Reveal';
+import { useWeddingConfig } from './WeddingProvider';
 
 /**
  * The typeset invitation on an ivory sheet, with the scanned original a tap
@@ -13,6 +14,7 @@ import Reveal from './Reveal';
  */
 export default function InvitationSection() {
   const [isZoomed, setIsZoomed] = useState(false);
+  const weddingConfig = useWeddingConfig();
 
   return (
     <>
@@ -23,9 +25,12 @@ export default function InvitationSection() {
           <div className="relative aspect-[10/16]">
             <InvitationCard onZoom={() => setIsZoomed(true)} />
           </div>
-          {/* <p className="relative text-center font-sans text-[10px] tracking-[0.2em] uppercase text-ink-soft/80 mt-3">
-            Tap the card to view the original
-          </p> */}
+          <p
+            onClick={() => setIsZoomed(true)}
+            className="relative text-center font-sans text-[11px] tracking-[0.15em] uppercase text-navy-medium/80 font-medium mt-3 flex items-center justify-center gap-1.5 cursor-pointer hover:text-gold-dark transition-colors"
+          >
+            <span>🔍</span> Tap to view original invitation &amp; guest list
+          </p>
         </div>
       </Reveal>
 
@@ -49,15 +54,15 @@ export default function InvitationSection() {
               initial={{ scale: 0.92, y: 15 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.92, y: 15 }}
-              className="relative w-full max-w-lg aspect-[10/21] sm:aspect-[9/18] rounded-xl overflow-hidden border-2 border-gold bg-[#FAF7F0] shadow-[0_0_50px_rgba(212,175,55,0.3)]"
+              className="relative w-full max-w-2xl max-h-[88vh] aspect-[1037/1517] rounded-xl overflow-hidden border-2 border-gold bg-[#FAF7F0] shadow-[0_0_50px_rgba(212,175,55,0.3)]"
               onClick={(e) => e.stopPropagation()}
             >
               <Image
-                src="/invitation.jpeg"
-                alt="Sanjay & Fathima Rani wedding invitation"
+                src={weddingConfig.invitationCard.scannedImage.src}
+                alt={weddingConfig.invitationCard.scannedImage.alt}
                 fill
                 className="object-contain p-1"
-                sizes="(max-width: 640px) 100vw, 512px"
+                sizes="(max-width: 640px) 100vw, 768px"
               />
             </motion.div>
           </motion.div>

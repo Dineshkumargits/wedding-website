@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { useWeddingConfig } from './WeddingProvider';
 
 interface TimeLeft {
   days: number;
@@ -13,7 +14,11 @@ interface TimeLeft {
 type CountdownVariant = 'dark' | 'paper';
 
 export default function Countdown({ variant = 'dark' }: { variant?: CountdownVariant }) {
-  const targetDate = new Date('2026-09-13T10:30:00+05:30'); // Indian Standard Time (IST)
+  const weddingConfig = useWeddingConfig();
+  const targetDate = useMemo(
+    () => new Date(weddingConfig.wedding.dateTimeIso),
+    [weddingConfig.wedding.dateTimeIso],
+  );
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
   const [isCompleted, setIsCompleted] = useState(false);
 
@@ -38,7 +43,7 @@ export default function Countdown({ variant = 'dark' }: { variant?: CountdownVar
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [targetDate]);
 
   const isPaper = variant === 'paper';
 
@@ -74,10 +79,10 @@ export default function Countdown({ variant = 'dark' }: { variant?: CountdownVar
           <h3
             className={`font-serif text-2xl mb-2 ${isPaper ? 'text-gold-dark' : 'text-gold-light'}`}
           >
-            The Celebration Has Begun!
+            {weddingConfig.sections.countdown.completedTitle}
           </h3>
           <p className={`text-sm ${isPaper ? 'text-ink-soft' : 'text-ivory'}`}>
-            Join us in celebrating this beautiful bond of love.
+            {weddingConfig.sections.countdown.completedMessage}
           </p>
         </div>
       ) : (

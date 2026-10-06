@@ -2,13 +2,13 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Volume2, VolumeX, Music } from 'lucide-react';
-
-/** Drop an audio file at this path in `public/` to enable the music player. */
-const TRACK_SRC = '/wedding-song.mp3';
+import { useWeddingConfig } from './WeddingProvider';
 
 type TrackStatus = 'loading' | 'ready' | 'unavailable';
 
 export default function MusicPlayer() {
+  const weddingConfig = useWeddingConfig();
+  const TRACK_SRC = weddingConfig.music.src;
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -74,7 +74,7 @@ export default function MusicPlayer() {
       audio.removeEventListener('error', handleError);
       audio.pause();
     };
-  }, []);
+  }, [TRACK_SRC]);
 
   // Play automatically on first user click/scroll anywhere on the page
   useEffect(() => {
@@ -172,7 +172,7 @@ export default function MusicPlayer() {
     <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
       {/* Visual tooltip */}
       <span className="hidden sm:inline-block glass-card border border-gold/30 px-3 py-1.5 rounded-full text-xs text-gold font-serif animate-pulse">
-        {isPlaying ? 'Now Playing 🎵' : 'Play Background Music 🎵'}
+        {isPlaying ? weddingConfig.music.autoplayHintPlaying : weddingConfig.music.autoplayHintPaused}
       </span>
 
       <div className="relative flex items-center justify-center">

@@ -1,0 +1,145 @@
+{
+  "id": "sanjay-fathima",
+  "meta": {
+    "siteTitle": "Wedding Celebration of Sanjay & Fathima Rani",
+    "siteDescription": "You are cordially invited to celebrate the holy matrimony of J. Joseph Sanjay & B. Fathima Rani on September 13, 2026 at St. Fathima Shrine, Krishnagiri.",
+    "ogLocale": "en_IN"
+  },
+  "couple": {
+    "initials": "S & F",
+    "displayNames": "Sanjay & Fathima Rani",
+    "groom": {
+      "fullName": "J. Joseph Sanjay",
+      "shortName": "Sanjay",
+      "qualification": "B.A., Viscom.",
+      "parents": {
+        "line1": "Mr. A. Joseph Loyola",
+        "line2": "Mrs. A. Joseph Philominal",
+        "city": "Krishnagiri"
+      }
+    },
+    "bride": {
+      "fullName": "B. Fathima Rani",
+      "shortName": "Fathima Rani",
+      "qualification": "B.A., (French) MBA.",
+      "parents": {
+        "line1": "Late Mr. A. Britto Thanishlas",
+        "line2": "Mrs. J. Roobi Shantha",
+        "city": "Devakottai"
+      }
+    },
+    "heroImage": {
+      "src": "/sanjay-fathima-cutout.png",
+      "alt": "J. Joseph Sanjay and B. Fathima Rani",
+      "width": 909,
+      "height": 2308
+    }
+  },
+  "invitationCard": {
+    "scannedImage": {
+      "src": "/invitation.jpeg",
+      "alt": "Sanjay & Fathima Rani wedding invitation"
+    },
+    "topScripture": {
+      "verse": "“This Thing Proceedeth from the Lord”",
+      "citation": "(Gen 24:50)"
+    },
+    "cardTitle": "Wedding Invitation",
+    "solicitationText": "Cordially solicit your gracious presence, prayers & blessings with family and friends on this marriage of",
+    "connector": "weds",
+    "compliments": {
+      "label": "With Best Compliments From:",
+      "from": "Friends & Relatives"
+    }
+  },
+  "wedding": {
+    "dateTimeIso": "2026-09-13T10:30:00+05:30",
+    "dateFormatted": "Sunday, 13 September 2026",
+    "dateNumeric": "13 . 09 . 2026",
+    "dateFormal": "On Sunday the 13th September 2026",
+    "dateShort": "September 13, 2026",
+    "summaryLocation": "Krishnagiri, Tamil Nadu",
+    "scripture": {
+      "quote": "“What therefore God hath joined together, let not man put asunder.”",
+      "reference": "Mark 10:9"
+    }
+  },
+  "events": {
+    "ceremony": {
+      "tag": "Ceremony",
+      "title": "Holy Matrimony",
+      "description": "Join us as we exchange vows, promise lifelong love, and receive the blessings of God in Holy Matrimony.",
+      "date": "Sunday, September 13, 2026",
+      "time": "10:30 AM Onwards",
+      "invitationTimeLabel": "between 10.30 am Onwards",
+      "venueName": "St. Fathima Shrine",
+      "venueLocation": "Krishnagiri"
+    },
+    "reception": {
+      "tag": "Reception",
+      "title": "The Reception",
+      "description": "Celebrate the beginning of our new chapter with food, drinks, and merrymaking. We cannot wait to celebrate with you!",
+      "date": "Sunday, September 13, 2026",
+      "time": "12:30 PM Onwards",
+      "invitationTimeLabel": "from 12.30 pm Onwards",
+      "venueName": "St. Fathima Shrine Campus",
+      "venueLocation": "Krishnagiri"
+    }
+  },
+  "location": {
+    "addressTitle": "St. Fathima Shrine Campus, Krishnagiri",
+    "googleMapsUrl": "https://maps.google.com/?q=St.+Fathima+Shrine,+Krishnagiri",
+    "mapEmbedSrc": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3899.4674681729094!2d78.21360067579726!3d12.551222887727105!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bac164db6e5f9cb%3A0xe67db50afb817e0b!2sSt.%20Fathima%20Shrine!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin",
+    "qrImage": {
+      "src": "/location-qr.jpeg",
+      "alt": "St. Fathima Shrine Google Map Location QR Code"
+    }
+  },
+  "music": {
+    "src": "/wedding-song.mp3",
+    "autoplayHintPlaying": "Now Playing 🎵",
+    "autoplayHintPaused": "Play Background Music 🎵"
+  },
+  "sections": {
+    "hero": {
+      "subtitle": "The Matrimony of",
+      "connector": "weds",
+      "scrollCue": "Scroll"
+    },
+    "countdown": {
+      "eyebrow": "Save the Date",
+      "completedTitle": "The Celebration Has Begun!",
+      "completedMessage": "Join us in celebrating this beautiful bond of love."
+    },
+    "invitation": {
+      "eyebrow": "Our Invitation",
+      "title": "You Are Cordially Invited"
+    },
+    "venue": {
+      "eyebrow": "Directions & Venues",
+      "title": "Ceremony & Reception Details",
+      "navigateButton": "Navigate",
+      "qrCardTitle": "Location QR Code",
+      "qrCardSubtitle": "Click to expand and scan to navigate on your mobile",
+      "qrCardBadge": "Scan 📱",
+      "qrModalTitle": "Scan for Directions",
+      "qrModalSubtitle": "Scan this QR code with your mobile camera to open Google Maps navigation directly.",
+      "qrModalButton": "Open in Google Maps App"
+    },
+    "rsvp": {
+      "eyebrow": "Confirm Presence",
+      "title": "Will You Celebrate With Us?",
+      "heading": "RSVP Registration",
+      "deadlineNotice": "Please respond by September 1, 2026, so we can finalize arrangements."
+    },
+    "guestbook": {
+      "eyebrow": "Shower Blessings",
+      "title": "Guest Blessings Wall",
+      "formHeading": "Leave a Blessing",
+      "formSubtitle": "Share your love, congratulations, or special prayers for Sanjay & Fathima Rani."
+    },
+    "footer": {
+      "message": "Thank you for being an indispensable part of our lives, sharing our happiness, and sending your lovely blessings."
+    }
+  }
+}

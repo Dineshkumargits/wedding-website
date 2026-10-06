@@ -20,38 +20,45 @@ const inter = Inter({
   weight: ["300", "400", "500", "600", "700"],
 });
 
-const title = "Wedding Celebration of Sanjay & Fathima Rani";
-const description =
-  "You are cordially invited to celebrate the holy matrimony of J. Joseph Sanjay & B. Fathima Rani on September 13, 2026 at St. Fathima Shrine, Krishnagiri.";
+import { headers } from "next/headers";
+import { getWeddingConfig } from "@/data/wedding";
 
-/**
- * Absolute base for OG/Twitter image URLs. Set NEXT_PUBLIC_SITE_URL once a
- * custom domain is live; otherwise Vercel's production URL is used, falling
- * back to localhost for local development.
- */
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
   (process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
     : "http://localhost:3000");
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title,
-  description,
-  // og:image is supplied automatically by src/app/opengraph-image.tsx
-  openGraph: {
+export async function generateMetadata(): Promise<Metadata> {
+  let host = "";
+  try {
+    const headersList = await headers();
+    host = headersList.get("host") || "";
+  } catch {
+    // fallback during static build
+  }
+
+  const config = getWeddingConfig(host);
+  const title = config.meta.siteTitle;
+  const description = config.meta.siteDescription;
+
+  return {
+    metadataBase: new URL(siteUrl),
     title,
     description,
-    type: "website",
-    locale: "en_IN",
-    siteName: "Sanjay & Fathima Rani",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title,
-    description,
-  },
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      locale: config.meta.ogLocale,
+      siteName: config.couple.displayNames,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
 };
 
 export default function RootLayout({

@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { ChevronDown } from 'lucide-react';
+import { useWeddingConfig } from './WeddingProvider';
 
 /**
  * The opening screen: the couple lit on a dark stage.
@@ -16,6 +17,11 @@ import { ChevronDown } from 'lucide-react';
  * nothing to hold.
  */
 export default function InvitationHero() {
+  const weddingConfig = useWeddingConfig();
+  const ceremonyLocation = weddingConfig.events.ceremony
+    ? `${weddingConfig.events.ceremony.venueName}, ${weddingConfig.events.ceremony.venueLocation}`
+    : weddingConfig.wedding.summaryLocation;
+
   return (
     <section className="relative min-h-[100svh] w-full overflow-hidden flex flex-col">
       {/* Stage light blooming from behind the couple */}
@@ -27,15 +33,15 @@ export default function InvitationHero() {
       {/* --- The names --- */}
       <div className="relative z-10 shrink-0 px-6 pt-[6svh] text-center">
         <span className="font-serif text-[10px] sm:text-xs tracking-[0.45em] uppercase text-gold-light/70">
-          The Matrimony of
+          {weddingConfig.sections.hero.subtitle}
         </span>
 
         <h1 className="mt-4 font-serif font-extrabold leading-[1.1] text-[1.75rem] sm:text-5xl text-gold-gradient">
-          J. Joseph Sanjay
+          {weddingConfig.couple.groom.fullName}
           <span className="block font-playfair font-normal italic text-ivory/45 text-base sm:text-2xl my-1 sm:my-2">
-            weds
+            {weddingConfig.sections.hero.connector}
           </span>
-          B. Fathima Rani
+          {weddingConfig.couple.bride.fullName}
         </h1>
 
         {/* Hairline with a gold lozenge, the divider used elsewhere on the page */}
@@ -46,10 +52,10 @@ export default function InvitationHero() {
         </div>
 
         <p className="mt-4 font-serif text-sm sm:text-lg tracking-[0.3em] text-gold-light">
-          13 . 09 . 2026
+          {weddingConfig.wedding.dateNumeric}
         </p>
         <p className="mt-1.5 font-sans text-[10px] sm:text-xs tracking-[0.25em] uppercase text-ivory/45">
-          St. Fathima Shrine, Krishnagiri
+          {ceremonyLocation}
         </p>
       </div>
 
@@ -65,10 +71,10 @@ export default function InvitationHero() {
           />
 
           <Image
-            src="/sanjay-fathima-cutout.png"
-            alt="J. Joseph Sanjay and B. Fathima Rani"
-            width={909}
-            height={2308}
+            src={weddingConfig.couple.heroImage.src}
+            alt={weddingConfig.couple.heroImage.alt}
+            width={weddingConfig.couple.heroImage.width ?? 909}
+            height={weddingConfig.couple.heroImage.height ?? 2308}
             priority
             sizes="(max-width: 640px) 60vw, 300px"
             className="relative block h-[48svh] max-h-[440px] w-auto object-contain drop-shadow-[0_0_45px_rgba(212,175,55,0.22)]"
@@ -77,11 +83,11 @@ export default function InvitationHero() {
           {/* Reflection in the floor. Masked so it fades as it falls away from
               their feet; the flip means the mask runs bottom-up in local space. */}
           <Image
-            src="/sanjay-fathima-cutout.png"
+            src={weddingConfig.couple.heroImage.src}
             alt=""
             aria-hidden
-            width={909}
-            height={2308}
+            width={weddingConfig.couple.heroImage.width ?? 909}
+            height={weddingConfig.couple.heroImage.height ?? 2308}
             sizes="(max-width: 640px) 60vw, 300px"
             className="absolute left-0 top-full h-[48svh] max-h-[440px] w-auto object-contain -scale-y-100 opacity-20 blur-[1.5px] pointer-events-none"
             style={{
@@ -103,7 +109,9 @@ export default function InvitationHero() {
         aria-hidden
         className="cue-enter absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1 text-gold-light/60"
       >
-        <span className="font-serif text-[9px] tracking-[0.35em] uppercase">Scroll</span>
+        <span className="font-serif text-[9px] tracking-[0.35em] uppercase">
+          {weddingConfig.sections.hero.scrollCue}
+        </span>
         <ChevronDown className="w-4 h-4 animate-bounce" />
       </div>
     </section>

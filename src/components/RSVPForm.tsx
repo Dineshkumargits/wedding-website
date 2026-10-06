@@ -4,8 +4,10 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { useWeddingConfig } from './WeddingProvider';
 
 export default function RSVPForm() {
+  const weddingConfig = useWeddingConfig();
   const [formData, setFormData] = useState({
     name: '',
     attendance: 'yes',
@@ -108,10 +110,10 @@ export default function RSVPForm() {
             >
               <div className="text-center mb-6">
                 <h4 className="font-serif text-xl sm:text-2xl text-gold-light font-bold">
-                  RSVP Registration
+                  {weddingConfig.sections.rsvp.heading}
                 </h4>
                 <p className="text-xs text-ivory/60 mt-1">
-                  Please respond by September 1, 2026, so we can finalize arrangements.
+                  {weddingConfig.sections.rsvp.deadlineNotice}
                 </p>
               </div>
 
