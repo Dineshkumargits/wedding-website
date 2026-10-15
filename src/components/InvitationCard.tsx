@@ -47,12 +47,12 @@ export default function InvitationCard({ onZoom }: { onZoom?: () => void }) {
 
         <div className="relative w-full flex-1 flex flex-col justify-between py-1">
           {/* Header scripture */}
-          <div className="text-[10px] sm:text-[12px] text-navy-medium font-serif italic border-b border-gold/20 pb-1 mx-3">
+          {/* <div className="text-[10px] sm:text-[12px] text-navy-medium font-serif italic border-b border-gold/20 pb-1 mx-3">
             &ldquo;{invitation.topScripture.verse.replace(/^[“"']|[”"']$/g, '')}&rdquo;
             <span className="block text-[9px] sm:text-[10px] font-sans not-italic text-gold-dark">
               {invitation.topScripture.citation}
             </span>
-          </div>
+          </div> */}
 
           <h4 className="font-serif text-[12px] sm:text-sm tracking-[0.2em] text-gold-dark uppercase font-semibold mt-1">
             {invitation.cardTitle}
